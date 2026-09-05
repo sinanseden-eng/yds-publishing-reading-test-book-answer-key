@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YDT Reading Test Book</title>
+    <style>
+        /* ── reset & base ── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: #f6f8fc;
+            color: #1a2332;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        /* ── header ── */
+        header {
+            background: linear-gradient(135deg, #0b1a33, #1a3a5c);
+            color: #fff;
+            padding: 28px 32px;
+            border-radius: 20px;
+            margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 20, 40, .2);
+        }
+        header h1 {
+            font-weight: 600;
+            font-size: 1.7rem;
+            letter-spacing: -.3px;
+        }
+        header h1 small {
+            font-weight: 400;
+            font-size: 1rem;
+            opacity: .75;
+            margin-left: 12px;
+        }
+        .test-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .test-nav button {
+            background: rgba(255, 255, 255, .12);
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: .2s;
+            backdrop-filter: blur(4px);
+        }
+        .test-nav button:hover {
+            background: rgba(255, 255, 255, .25);
+        }
+        .test-nav button.active {
+            background: #ffd966;
+            color: #0b1a33;
+        }
+
+        /* ── main layout ── */
+        .reader {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 900px) {
+            .reader {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── cards ── */
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .04);
+            padding: 24px 28px;
+            transition: box-shadow .2s;
+            border: 1px solid rgba(0, 0, 0, .04);
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #4a5b7a;
+            letter-spacing: .3px;
+            text-transform: uppercase;
+            font-size: .75rem;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #eef2f7;
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title span {
+            background: #eef2f7;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: .7rem;
+            color: #2a3a5a;
+        }
+
+        /* ── passage ── */
+        .passage-text {
+            font-size: 0.98rem;
+            line-height: 1.75;
+            color: #1e2a3e;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 6px;
+            scroll-behavior: smooth;
+        }
+        .passage-text p {
+            margin-bottom: 1em;
+        }
+        .passage-text .hl {
+            background: #fae77c;
+            padding: 0 4px;
+            border-radius: 6px;
+            transition: background .25s;
+            font-weight: 500;
+        }
+        .passage-text .hl.correct {
+            background: #7bcfa6;
+        }
+        .passage-text .hl.wrong {
+            background: #f7a1a1;
+        }
+
+        /* ── questions ── */
+        .question-list {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .q-item {
+            background: #fafcff;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e9edf4;
+            transition: .2s;
+        }
+        .q-item:hover {
+            border-color: #c8d4e6;
+        }
+        .q-text {
+            font-weight: 600;
+            font-size: .96rem;
+            margin-bottom: 12px;
+            color: #0f1e32;
+        }
+        .q-text .q-num {
+            display: inline-block;
+            background: #0b1a33;
+            color: #fff;
+            width: 26px;
+            height: 26px;
+            text-align: center;
+            line-height: 26px;
+            border-radius: 40px;
+            font-size: .75rem;
+            margin-right: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            background: #f4f7fc;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: .15s;
+            font-size: .92rem;
+        }
+        .options label:hover {
+            background: #e9eff8;
+        }
+        .options label .letter {
+            font-weight: 700;
+            color: #3a5a7a;
+            min-width: 22px;
+        }
+        .options input[type="radio"] {
+            accent-color: #1a3a5c;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .options label.selected-correct {
+            border-color: #2b8c5e;
+            background: #e1f5ed;
+        }
+        .options label.selected-wrong {
+            border-color: #c94a4a;
+            background: #fde8e8;
+        }
+        .options label.show-correct {
+            border-color: #2b8c5e;
+            background: #e1f5ed;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-size: .85rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 40px;
+            display: inline-block;
+            background: #f0f3f9;
+            color: #3a4a6a;
+        }
+        .feedback.correct {
+            background: #d4efe4;
+            color: #1a6a44;
+        }
+        .feedback.wrong {
+            background: #fce3e3;
+            color: #b33a3a;
+        }
+
+        /* ── passage selector (for tests with multiple passages) ── */
+        .passage-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .passage-tabs button {
+            background: #eef2f7;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: .8rem;
+            color: #2a3a5a;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .passage-tabs button:hover {
+            background: #dce4ef;
+        }
+        .passage-tabs button.active {
+            background: #0b1a33;
+            color: #fff;
+        }
+
+        /* ── scrollbar ── */
+        .passage-text::-webkit-scrollbar,
+        .question-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .passage-text::-webkit-scrollbar-track,
+        .question-list::-webkit-scrollbar-track {
+            background: #eef2f7;
+            border-radius: 10px;
+        }
+        .passage-text::-webkit-scrollbar-thumb,
+        .question-list::-webkit-scrollbar-thumb {
+            background: #bcc8dd;
+            border-radius: 10px;
+        }
+
+        /* ── responsive tweaks ── */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            header {
+                padding: 18px 20px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+            header h1 {
+                font-size: 1.2rem;
+            }
+            .card {
+                padding: 16px 18px;
+            }
+            .q-item {
+                padding: 14px 16px;
+            }
+            .options label {
+                font-size: .85rem;
+                padding: 6px 12px;
+            }
+        }
+
+        /* ── status bar ── */
+        .status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #eef2f7;
+            border-radius: 16px;
+            font-size: .85rem;
+            color: #2a3a5a;
+        }
+        .status-bar .score {
+            font-weight: 700;
+            color: #0b1a33;
+        }
+        .status-bar .reset-btn {
+            background: none;
+            border: none;
+            color: #4a6a8a;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 40px;
+            transition: .2s;
+        }
+        .status-bar .reset-btn:hover {
+            background: #dce4ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+
+        <!-- Header -->
+        <header>
+            <h1>📖 YDT Reading <small>Test Book</small></h1>
+            <div class="test-nav" id="testNav"></div>
+        </header>
+
+        <!-- Reader -->
+        <div class="reader">
+            <!-- Left: Passage -->
+            <div class="card">
+                <div class="card-title">
+                    📄 Parça
+                    <span id="passageLabel">Test 1 · Parça 1</span>
+                </div>
+                <div class="passage-tabs" id="passageTabs"></div>
+                <div class="passage-text" id="passageText"></div>
+            </div>
+
+            <!-- Right: Questions -->
+            <div class="card">
+                <div class="card-title">
+                    ❓ Sorular
+                    <span id="questionCount">0 soru</span>
+                </div>
+                <div class="question-list" id="questionList"></div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>✅ <span class="score" id="scoreDisplay">0 / 0</span> doğru</span>
+            <button class="reset-btn" id="resetBtn">⟳ Tüm cevapları sıfırla</button>
+        </div>
+
+    </div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DATA  –  Tests 1–11  (Part 1: Reading Passages)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const DATA = {
+
+            // ─── TEST 1 ───
+            test1: {
+                passages: [{
+                    id: 't1p1',
+                    label: 'Kraftwerk',
+                    text: `<p>The German music band Kraftwerk is, for many, nothing less than the progenitor of electronic music. As these pioneering musicians continue to break old ground, decades after their first appearance, one cannot fail to notice that very few groups nowadays could lay claim to such an influential and prodigious career. Can anyone find today an equivalent to the legendary bands of the 60s, 70s or early 80s among contemporary groups? It seems that innovation is not on the agenda of the companies who control the profitable music industry. Therefore, bands tend to play safe by clinging to the most profitable, well-established and less risky forms of music. However, if music is a form of art rather than mere entertainment, the companies who dictate the rules of the game called music will have to allow for artists who are passionate, unsafe and ready to experiment.</p>`,
+                    questions: [{
+                        id: 't1q1',
+                        text: 'It can be understood from the passage that Kraftwerk',
+                        options: ['was long forgotten when people met new innovative groups',
+                            'is a case of innovative music bands who dare to try new things in music',
+                            'was profit-orientated and very successful',
+                            'exerted influence back in the 70s and 80s',
+                            'is the most famous music band in Germany due to their success in their style'
+                        ],
+                        answer: 1,
+                        highlight: 'The German music band Kraftwerk is, for many, nothing less than the progenitor of electronic music. As these pioneering musicians continue to break old ground'
+                    }, {
+                        id: 't1q2',
+                        text: 'It is clear from the passage that music companies',
+                        options: ['try hard to give opportunities for the ones who are passionate musicians',
+                            'are reluctant to invest in groups who play electronic music',
+                            'would not sign a contract with an old-fashioned group like Kraftwerk',
+                            'do not seek innovative musicians but those who bring money in the market',
+                            'are trying to encourage experimental artists who have more potential'
+                        ],
+                        answer: 3,
+                        highlight: 'It seems that innovation is not on the agenda of the companies who control the profitable music industry. Therefore, bands tend to play safe by clinging to the most profitable, well-established and less risky forms of music.'
+                    }, {
+                        id: 't1q3',
+                        text: 'According to the passage, why are today\'s music groups not doing as well as those in the past?',
+                        options: ['They try to make art and produce new styles instead of entertaining their audience.',
+                            'They take risks in order to produce experimental styles.',
+                            'The priority of music industry is to earn money rather than make art.',
+                            'Music industry cannot find many innovative musicians as they used to.',
+                            'Most of them play electronic music, which is not applauded by the public.'
+                        ],
+                        answer: 2,
+                        highlight: 'It seems that innovation is not on the agenda of the companies who control the profitable music industry. Therefore, bands tend to play safe by clinging to the most profitable, well-established and less risky forms of music.'
+                    }]
+                }, {
+                    id: 't1p2',
+                    label: 'Viking surnames',
+                    text: `<p>Surnames ending with the suffix -son in the area of Yorkshire in England are very common. This apparently insignificant piece of information tells a big story, though. Namely, it reflects the predominance of inhabitants who are descendants of Scandinavian Vikings in this region of Northern Britain. Many British with Scandinavian roots are trying to rediscover, revive and promote their Nordic identity. Traditions coming from the Vikings are increasingly popular, especially in remote areas in the north of Scotland. Many claim these revivals as another fashion which simply indicates the need of people to be part of a community. The criticism against resurgent traditionalism is that it has little to do with respect for tradition itself. Conversely, those who are fascinated with rediscovered roots are just trying to form some sort of collective identity within an uncertain and fragmented contemporary world.</p>`,
+                    questions: [{
+                        id: 't1q4',
+                        text: 'It is stated in the passage that the high percentage of Nordic surnames in the area of Yorkshire',
+                        options: ['shows the frequency of Viking ancestry there',
+                            'proves that Vikings are still dominant there',
+                            'is not the only sign of the Viking heritage in Northern Britain',
+                            'is exclusive to this area',
+                            'has nothing to do with Scandinavian people'
+                        ],
+                        answer: 0,
+                        highlight: 'Surnames ending with the suffix -son in the area of Yorkshire in England are very common. This apparently insignificant piece of information tells a big story, though. Namely, it reflects the predominance of inhabitants who are descendants of Scandinavian Vikings in this region of Northern Britain.'
+                    }, {
+                        id: 't1q5',
+                        text: 'What can be inferred from the passage about the recent revival of Viking traditions in Northern Britain?',
+                        options: ['It relates to the influence that Vikings exert.',
+                            'It shows that many people in the area see themselves as Viking rather than British.',
+                            'It can be attributed to the large number of Vikings who once lived there.',
+                            'It disturbs many British people and cause unrest in the country.',
+                            'It shows the need of contemporary people for a sense of belonging in a community.'
+                        ],
+                        answer: 4,
+                        highlight: 'Many claim these revivals as another fashion which simply indicates the need of people to be part of a community.'
+                    }, {
+                        id: 't1q6',
+                        text: 'What is the passage mainly about?',
+                        options: ['The importance of keeping traditions alive',
+                            'The multicultural background of Yorkshire',
+                            'Contemporary identity issues and the way they are reflected on traditionalism',
+                            'Ethnic minorities and their effort to safeguard their identity today',
+                            'The difficulty to maintain an ethnic identity in the contemporary world'
+                        ],
+                        answer: 2,
+                        highlight: 'Conversely, those who are fascinated with rediscovered roots are just trying to form some sort of collective identity within an uncertain and fragmented contemporary world.'
+                    }]
+                }, {
+                    id: 't1p3',
+                    label: 'Re-enactment',
+                    text: `<p>What makes grown-up people all over the world dress up as knights or soldiers or as an Indian warrior or a Napoleonic soldier to re-enact battles? The phenomenon of historical re-enactment is amazing in that so many people are prepared to spend time and money to do what would have been inconceivable a few decades ago. The defenders of this new fashion say that through re-enactments they can feel history in their skin and that playing the role of a Roman legionnaire is not childish but a way to witness history from the inside. Yet, personally I believe it all boils down to an effort to gain permission to play but, of course, with more expensive toys. Fancy as these staged battles might be, they appear to me as a struggle to cling to the carelessness of childhood. On top of that, history cannot be grasped by wearing a uniform or an armour.</p>`,
+                    questions: [{
+                        id: 't1q7',
+                        text: 'It is clear from the passage that those who partake in re-enactments',
+                        options: ['feel that they want to remain children',
+                            'do it for the pleasure of wearing uniforms',
+                            'perceive it as a way of identifying with historical figures and events',
+                            'give priority to historical accuracy and so they spend great effort to revive the events',
+                            'prefer to do it in order to have fun just like children do'
+                        ],
+                        answer: 2,
+                        highlight: 'The defenders of this new fashion say that through re-enactments they can feel history in their skin and that playing the role of a Roman legionnaire is not childish but a way to witness history from the inside.'
+                    }, {
+                        id: 't1q8',
+                        text: 'It is evident that the writer of the passage',
+                        options: ['has a great admiration for those who spend time and money to re-enact battles',
+                            'sees these events as waste of resources',
+                            'is very sceptical with the claims of those who participate in the re-enactments',
+                            'defends the right of grown-ups to enjoy the experience of those re-enactments',
+                            'believes re-enactments are necessary to witness historical events'
+                        ],
+                        answer: 2,
+                        highlight: 'Yet, personally I believe it all boils down to an effort to gain permission to play but, of course, with more expensive toys. Fancy as these staged battles might be, they appear to me as a struggle to cling to the carelessness of childhood.'
+                    }, {
+                        id: 't1q9',
+                        text: 'It is implied in the passage that history',
+                        options: ['can be experienced by re-enactments',
+                            'is too complex to be understood by those taking part in these events',
+                            'is too serious a field of knowledge to become part of childish re-enactments',
+                            'is better grasped by experiencing it through games, just like children learn through toys',
+                            'cannot be understood by means of role-playing alone'
+                        ],
+                        answer: 4,
+                        highlight: 'On top of that, history cannot be grasped by wearing a uniform or an armour.'
+                    }]
+                }, {
+                    id: 't1p4',
+                    label: 'Skull fashion',
+                    text: `<p>Meet one of the love affairs of designers. It is called the skull. Everywhere, from children's woollen hats to expensive fashion accessories, skulls seem to be the must-have sensational detail. These universal symbols of death sometimes come in glittering pink, sometimes as valuable stones. Some say that designers will use anything that attracts attention. Some others even think that the frequent use of smiling or colourful skulls reflects an effort to make death more acceptable. Likewise, some even believe there is a conspiracy behind this persistent unpleasant image. Namely, they claim that, in a war-torn period of history, there is a plan to make people used to the image of death to make it seem normal, even entertaining. But most people simply find this fashion either distasteful or 'cool'. At the end of the day, beauty is in the mind of the beholder.</p>`,
+                    questions: [{
+                        id: 't1q10',
+                        text: 'It can be understood from the passage that the writer',
+                        options: ['does not take a clear position as to why skulls are often used by designers',
+                            'is very critical of designers for using this unpleasant image in their creations',
+                            'has no opinion about the issue of skulls',
+                            'cannot understand why people get upset by what designers decide to use',
+                            'believes that designers who use skulls are doing so because of a hidden agenda'
+                        ],
+                        answer: 0,
+                        highlight: 'At the end of the day, beauty is in the mind of the beholder.'
+                    }, {
+                        id: 't1q11',
+                        text: 'Which of the following can be concluded from the passage?',
+                        options: ['Opinions about the use of skulls in fashion is mostly neutral because people don\'t take the issue of skulls seriously.',
+                            'Skulls represent death, and the use of them in the fashion industry should not be accepted easily however cutely it is presented.',
+                            'People have different opinions about the use of skulls on fashion items.',
+                            'Designs with sparkly, colourful skulls are distasteful.',
+                            'People\'s opinions on this trend can be manipulated by the design industry.'
+                        ],
+                        answer: 2,
+                        highlight: 'Some say that designers will use anything that attracts attention. Some others even think that the frequent use of smiling or colourful skulls reflects an effort to make death more acceptable. Likewise, some even believe there is a conspiracy behind this persistent unpleasant image. But most people simply find this fashion either distasteful or \'cool\'.'
+                    }, {
+                        id: 't1q12',
+                        text: 'The passage is mostly about',
+                        options: ['the unacceptable use of the symbol of death by designers',
+                            'the difficult choices designers are facing',
+                            'the problems arising when both morality and aesthetics are compromised',
+                            'the different significance people can attribute towards the same thing',
+                            'how peoples attitudes towards a specific phenomenon are formed'
+                        ],
+                        answer: 3,
+                        highlight: 'At the end of the day, beauty is in the mind of the beholder.'
+                    }]
+                }, {
+                    id: 't1p5',
+                    label: 'London balconies',
+                    text: `<p>London is a city full of balconies, especially inside its historical centre. But hardly any people can be seen on them. Londoners do not necessarily have the habit of spending time on their exquisite balconies. Conversely, in countries such as Spain or Italy, people seem to spend more time on their balconies and yards than indoors. Filled with colourful flowers, those balconies and yards are pleasantly inviting. One could assume that the different attitudes between the British and their Southern neighbours relate to weather, but even over warm summer days few British will venture the great outdoors. If one watches more closely, it is not only people but even personal items which are absent from these spaces exposed to the public eye. Eventually, it is exactly the way North Europeans perceive public as opposed to private space, in relation to their Southern counterparts, which accounts for these different attitudes. While Italians are happy to chat endlessly with neighbours, the British will avoid exposing themselves to public scrutiny, or their laundry, for that matter.</p>`,
+                    questions: [{
+                        id: 't1q13',
+                        text: 'It can be understood from the passage that North Europeans, especially the British,',
+                        options: ['believe that South Europeans are reckless',
+                            'avoid using balconies because of their attitude towards privacy',
+                            'do not tend to use their balconies mostly because of the cold weather',
+                            'don\'t like to have balconies in their homes',
+                            'think that sitting outside on a balcony is a very South European habit for their taste'
+                        ],
+                        answer: 1,
+                        highlight: 'Eventually, it is exactly the way North Europeans perceive public as opposed to private space, in relation to their Southern counterparts, which accounts for these different attitudes. While Italians are happy to chat endlessly with neighbours, the British will avoid exposing themselves to public scrutiny, or their laundry, for that matter.'
+                    }, {
+                        id: 't1q14',
+                        text: 'Which of the following could be the best title for the passage?',
+                        options: ['Different Cultures, Different Habits',
+                            'The Right Way to Use Balconies',
+                            'Attraction of British Balconies',
+                            'Change in the Styles of Buildings',
+                            'Stereotypes of Northern Europe'
+                        ],
+                        answer: 0,
+                        highlight: 'Eventually, it is exactly the way North Europeans perceive public as opposed to private space, in relation to their Southern counterparts, which accounts for these different attitudes.'
+                    }, {
+                        id: 't1q15',
+                        text: 'It is implied in the passage that',
+                        options: ['people\'s habits relate, to a great extent, to their cultural background',
+                            'the cultural background can change due to the country\'s geographical location',
+                            'differences in habits with regard to minor issues are insignificant',
+                            'one can often have the habit of using a balcony depending on the climate',
+                            'the weather dictates different habits'
+                        ],
+                        answer: 0,
+                        highlight: 'Eventually, it is exactly the way North Europeans perceive public as opposed to private space, in relation to their Southern counterparts, which accounts for these different attitudes.'
+                    }]
+                }, {
+                    id: 't1p6',
+                    label: 'Professionalism',
+                    text: `<p>So what does professionalism mean for teachers? The answer seems to be self-evident, while for many this is a useless question. Of course, professionalism is about delivering the lesson in a faultless way, planning ahead and responding to students' needs. Or is it that we are missing something here? All these nice sounding words cover up the fact that many teachers have very different definitions for all the above. What, for instance, does it mean to respond to students' needs? Who dictates what the needs or the appropriate response to them are? Well, you start to get the point: Things which are taken for granted are precisely those which have to be clearly defined before we develop a common language about what professionalism in education is about.</p>`,
+                    questions: [{
+                        id: 't1q16',
+                        text: 'It can be understood from the passage that professionalism within education',
+                        options: ['means doing whatever is asked for by students in a classroom and meeting their needs',
+                            'is a term that needs to be looked at more closely',
+                            'creates great opportunities for learners as well as teachers',
+                            'does not mean much to many teachers, let alone students',
+                            'is luckily a commonly accepted term that is adopted in classrooms'
+                        ],
+                        answer: 1,
+                        highlight: 'Things which are taken for granted are precisely those which have to be clearly defined before we develop a common language about what professionalism in education is about.'
+                    }, {
+                        id: 't1q17',
+                        text: 'Which of the following best describes the writer\'s beliefs?',
+                        options: ['No one can tell what professionalism really is.',
+                            'Professionalism dictates what the appropriate response to students\' needs is.',
+                            'Educationalists have to find common ground on the issue of professionalism.',
+                            'Many educators are unprofessional, which leads to problems in education.',
+                            'There is no agreement on the importance of professionalism on education.'
+                        ],
+                        answer: 2,
+                        highlight: 'Things which are taken for granted are precisely those which have to be clearly defined before we develop a common language about what professionalism in education is about.'
+                    }, {
+                        id: 't1q18',
+                        text: 'The passage is mainly about',
+                        options: ['the importance of employing really professional teachers',
+                            'the problem of unprofessional teachers who do not realise what education is about',
+                            'modern ideas about professionalism in education',
+                            'the tension between those who have a vision about education and those who don\'t',
+                            'the necessity of making out the concept of professionalism in education'
+                        ],
+                        answer: 4,
+                        highlight: 'Things which are taken for granted are precisely those which have to be clearly defined before we develop a common language about what professionalism in education is about.'
+                    }]
+                }, {
+                    id: 't1p7',
+                    label: 'Sales psychology',
+                    text: `<p>We all know how alluring sales are for customers. What most of us don't know is how sales work. That is, most of us have no idea what it is exactly that makes people rush into shops when sales are on. Psychologists have proven that prospective customers do not really pay so much attention to what they are going to spend as how much they are going to save when they grab a bargain. In other words, when a consumer sees an item reduced from 70 pounds to 40, she or he is not going to think this is going to cost me 40 but hey, by buying this I'm saving 30. So, all a cunning merchant has to do is pump up the initial price by, for example, 25% and then reduce it by the same percentage, presenting it as a 'sale'.</p>`,
+                    questions: [{
+                        id: 't1q19',
+                        text: 'It can be understood from the passage that the writer',
+                        options: ['knows well why and how sales work on customers',
+                            'believes that merchants should put goods into sale after increasing their prices',
+                            'encourages merchants to raise their prices so that they can afford to sell on sale',
+                            'finds it unacceptable for merchants to put items on sales after raising their price',
+                            'believes sales are effectively necessary for customers'
+                        ],
+                        answer: 0,
+                        highlight: 'Psychologists have proven that prospective customers do not really pay so much attention to what they are going to spend as how much they are going to save when they grab a bargain.'
+                    }, {
+                        id: 't1q20',
+                        text: 'The passage implies that the ways people make their choices before buying a good',
+                        options: ['depend on the price of an item',
+                            'are usually related to their need for it',
+                            'are a subject researched by psychologists for a long time',
+                            'can be easily manipulated by merchants',
+                            'are usually variable depending on the season the sales take place in'
+                        ],
+                        answer: 3,
+                        highlight: 'So, all a cunning merchant has to do is pump up the initial price by, for example, 25% and then reduce it by the same percentage, presenting it as a \'sale\'.'
+                    }, {
+                        id: 't1q21',
+                        text: 'According to the writer, which of the following is true when a product is down to 40 pounds from 70?',
+                        options: ['A sensible consumer should better buy an item without thinking much.',
+                            'The consumer will prioritise opportunity over expenditure and is likely to buy it.',
+                            'It is the right time for the consumer to buy an item.',
+                            'The consumer should just think of how much they will save by buying it.',
+                            'People should think only if they really need a particular item rather than focus on the price tag.'
+                        ],
+                        answer: 1,
+                        highlight: 'when a consumer sees an item reduced from 70 pounds to 40, she or he is not going to think this is going to cost me 40 but hey, by buying this I\'m saving 30.'
+                    }]
+                }, {
+                    id: 't1p8',
+                    label: 'Lyme disease',
+                    text: `<p>Lyme disease is a relatively new threat spreading across Europe and North America. Humans can develop this life-threatening disease from tick bites. Deer ticks attach themselves to passersby, and if they remain unnoticed on the skin for more than 36 hours, they can contaminate the blood stream with a bacillus which can trigger Lyme disease. Not every person contaminated by this bacillus will develop this condition, which attacks the nervous system with often crippling consequences. However, the percentage of those who will do so is quite high. People should take extra precautions when walking in forests and prefer clothes with light colours which make attached ticks more visible and easy to remove afterwards. Exposed hands and especially feet are not a good idea; thus, long sleeves and trousers are advisable. There are different theories about where this bacillus came from, but there is little disagreement on what precautions should be taken.</p>`,
+                    questions: [{
+                        id: 't1q22',
+                        text: 'It can be understood from the passage that there are uncertain assumptions about',
+                        options: ['which measures should be taken when a tick bites a human',
+                            'the origin of the bacillus',
+                            'what carries the disease',
+                            'how the disease can be passed on to humans',
+                            'the relation of ticks to the disease'
+                        ],
+                        answer: 1,
+                        highlight: 'There are different theories about where this bacillus came from'
+                    }, {
+                        id: 't1q23',
+                        text: 'What is the author\'s primary purpose in this passage?',
+                        options: ['To explain the consequences of Lyme disease',
+                            'To give examples of possible symptoms of Lyme disease',
+                            'To inform the reader about Lyme disease',
+                            'To present where Lyme disease is spreading',
+                            'To teach people which precautions to take against Lyme disease'
+                        ],
+                        answer: 2,
+                        highlight: 'Lyme disease is a relatively new threat spreading across Europe and North America.'
+                    }, {
+                        id: 't1q24',
+                        text: 'It is implied in the passage that if a deer tick stays more than 36 hours attached on a person',
+                        options: ['it has little affect on diseases',
+                            'it becomes less dangerous for the body',
+                            'it may infect the body for a short time',
+                            'the bacillus will possibly die as it can\'t survive that long',
+                            'it runs a considerable risk of a potentially fatal disease'
+                        ],
+                        answer: 4,
+                        highlight: 'if they remain unnoticed on the skin for more than 36 hours, they can contaminate the blood stream with a bacillus which can trigger Lyme disease.'
+                    }]
+                }]
+            },
+
+            // ─── TEST 2 ───
+            test2: {
+                passages: [{
+                    id: 't2p1',
+                    label: 'Wernher von Braun',
+                    text: `<p>The greatest scientist of American history and the mastermind behind the NASA programme in the 60s was not an American but a German who invented the first ballistic missile. Wernher von Braun is the man who developed during the 1940s the extraordinary technological feat called the V2 rocket. After the first successful trial of his brainchild, he declared that the way for travelling to the stars was open! The German political and military establishment was not concerned about spaceships at that moment. However, using the same technology, the V2 wonder-weapon was effectively their last chance to turn the tide of the Second World War. Von Braun was captured by the US army in 1945, became an American citizen and played a key role in the Apollo programme which took man to the Moon. Upon immigration, he was asked at the US border if he had ever been linked to an anti-American organisation, he answered "Yes, the German Army". However, he was in fact a true servant of the USA.</p>`,
+                    questions: [{
+                        id: 't2q1',
+                        text: 'Which statement is true about V2?',
+                        options: ['It was an early attempt of the Germans to conquer outer space.',
+                            'It was a weapon Braun designed for the US army.',
+                            'It was a technologically advanced German rocket.',
+                            'It had been modified a few times since its invention.',
+                            'It made the German Army feel excited about exploring the space.'
+                        ],
+                        answer: 2,
+                        highlight: 'Wernher von Braun is the man who developed during the 1940s the extraordinary technological feat called the V2 rocket.'
+                    }, {
+                        id: 't2q2',
+                        text: 'Which of the following can be understood from the passage?',
+                        options: ['The rocket Wernher von Braun designed was essentially a way to defeat the enemy.',
+                            'Wernher von Braun\'s design changed the fate of the German army for the better way.',
+                            'The designed rocket was effective enough to change the flow of a big war.',
+                            'Wernher von Braun designed the V2 rocket for the American programme against his free will.',
+                            'The V2 rocket was the most advanced weapon US army had available in its arsenal.'
+                        ],
+                        answer: 2,
+                        highlight: 'using the same technology, the V2 wonder-weapon was effectively their last chance to turn the tide of the Second World War.'
+                    }, {
+                        id: 't2q3',
+                        text: 'It can be understood from the passage that Wernher von Braun',
+                        options: ['worked against the US for most of his life',
+                            'was a staunch anti-American when he went to the US',
+                            'remained a captive of the Americans until the 60s',
+                            'declared upon arrival in the US that he had cooperated with a hostile army',
+                            'went to America to continue the V2 programme'
+                        ],
+                        answer: 3,
+                        highlight: 'Upon immigration, he was asked at the US border if he had ever been linked to an anti-American organisation, he answered "Yes, the German Army".'
+                    }]
+                }, {
+                    id: 't2p2',
+                    label: 'Snails',
+                    text: `<p>Snails are very slow moving creatures, and they do not seem to have a good reputation in many cultures since most people associate that nature with being lazy and not good for much. That they are not mystical or beautiful has led to more stories and cultures viewing them as something bad or evil. For instance, in Judeo-Christian culture, the snail has often been viewed as a manifestation of the deadly sin of sloth. In fact, in many early cultures, the movements of the snail were viewed as being unclean, and people were often marked with a snail as a sign of punishment. On the other hand, the Greek poet Hesiod wrote that snails signified the time to harvest by climbing the stalks, while the Aztec believed that the snail was the moon god and that the shell was his protection. And the psychologist Carl Jung noted that the snail was the representative of the self in dreams. In psychology, the soft insides are analogous to the subconscious as the shell is the conscious. Though not everyone buys this theory, many professors mention this in their lessons today.</p>`,
+                    questions: [{
+                        id: 't2q4',
+                        text: 'According to the passage, the snail',
+                        options: ['is celebrated in many cultures',
+                            'symbolises dirty people in various cultures',
+                            'has never been mentioned by scholars',
+                            'symbolises laziness in some cultures',
+                            'has never been regarded as a sign of unwillingness to work'
+                        ],
+                        answer: 3,
+                        highlight: 'in Judeo-Christian culture, the snail has often been viewed as a manifestation of the deadly sin of sloth.'
+                    }, {
+                        id: 't2q5',
+                        text: 'It can be understood from the passage that',
+                        options: ['the Greek thought that the harvest would be bad if there were snails on the stalks',
+                            'it is impossible to find anything that depicts the snail as being self-reliant',
+                            'the snail is associated with anything but punishment',
+                            'the Aztec attributed quite gloomy characteristics to the snail',
+                            'not all cultures have detested the snail'
+                        ],
+                        answer: 4,
+                        highlight: 'On the other hand, the Greek poet Hesiod wrote that snails signified the time to harvest by climbing the stalks, while the Aztec believed that the snail was the moon god'
+                    }, {
+                        id: 't2q6',
+                        text: 'Which of the following can be understood from the passage?',
+                        options: ['Carl Jung was fond of snails.',
+                            'No scholars use Jung\'s analogy today.',
+                            'Jung likened the soft part of a snail to the subconscious.',
+                            'Jung considered the self in dreams as evil as the snail.',
+                            'Jung was an expert on the anatomy of the snail.'
+                        ],
+                        answer: 2,
+                        highlight: 'In psychology, the soft insides are analogous to the subconscious as the shell is the conscious.'
+                    }]
+                }, {
+                    id: 't2p3',
+                    label: 'Vintage clothing',
+                    text: `<p>Vintage clothing is a fad which took Britain and most of Western Europe by storm. Nowadays, clothing styles from the fifties through the eighties are in demand by youths who were not even born when these clothes were first worn. Most vintage clothes are second-hand, authentic pieces. However, many designers today follow the bright colours and extravagant style of these otherwise bygone eras. The benefits of selling an unwanted, old item as a rarity for a high price are easy to see. As long as the public demand remains high, there are handsome profits for the merchants involved in this lucrative trade. Fashion designers are benefiting as well because they can draw inspiration from the vast pool of the past. Some cynics speculate that contemporary designers are recycling the ideas of the past as they are simply not talented enough to come up with their own revolution in fashion.</p>`,
+                    questions: [{
+                        id: 't2q7',
+                        text: 'It is clear from the passage that vintage clothes',
+                        options: ['are already used items sold at trendy shops',
+                            'are either remakes of old designs or used as second-hand',
+                            'are low quality replicas of the clothes of 50s, 60s and 80s',
+                            'are good quality for their price',
+                            'are usually fake items or second-hand'
+                        ],
+                        answer: 1,
+                        highlight: 'Most vintage clothes are second-hand, authentic pieces. However, many designers today follow the bright colours and extravagant style of these otherwise bygone eras.'
+                    }, {
+                        id: 't2q8',
+                        text: 'The underlined word \'lucrative\' in the passage is closest in meaning to',
+                        options: ['financial',
+                            'important',
+                            'profitable',
+                            'exceptional',
+                            'normal'
+                        ],
+                        answer: 2,
+                        highlight: 'As long as the public demand remains high, there are handsome profits for the merchants involved in this lucrative trade.'
+                    }, {
+                        id: 't2q9',
+                        text: 'It is implied in the passage that fashion designers related to vintage clothes',
+                        options: ['tend to choose the way of less effort to make money',
+                            'try to create a new revolution in fashion',
+                            'think that traditional clothes look a lot more elegant on people',
+                            'use old ideas because they like tradition',
+                            'would rather not rely on what has been already created by others'
+                        ],
+                        answer: 0,
+                        highlight: 'Some cynics speculate that contemporary designers are recycling the ideas of the past as they are simply not talented enough to come up with their own revolution in fashion.'
+                    }]
+                }, {
+                    id: 't2p4',
+                    label: 'Women\'s suffrage',
+                    text: `<p>The women's suffrage movement in the United States began in earnest in the decades before the Civil War. During the 1820s and 30s, most states had extended the franchise to all white men, regardless of how much money or property they had. At the same time, all sorts of reform groups were proliferating across the United States and in many of these, women played a prominent role. Meanwhile, many American women were beginning to chafe against what historians have called the "Cult of True Womanhood": that is, the idea that the only "true" woman was a submissive wife and mother concerned exclusively with home and family. Put together, all of these contributed to a new way of thinking about what it meant to be a woman and a citizen of the United States. It took activists and reformers nearly 100 years to win the right to vote for women, and the campaign was not easy. Disagreements over strategy threatened to cripple the movement more than once. But on August 18, 1920, the 19th Amendment to the Constitution was finally ratified, declaring for the first time that women deserve all the rights and responsibilities of citizenship.</p>`,
+                    questions: [{
+                        id: 't2q10',
+                        text: 'What can be inferred from the passage about the women\'s suffrage movement in the United States?',
+                        options: ['Different perspectives occasionally posed a risk to the movement.',
+                            'It enjoyed an unprecedented victory prior to the 19th century.',
+                            'Their success was largely due to the Cult of True Womanhood.',
+                            'The women involved in it had little regard for the slaves\' rights.',
+                            'Members almost always reached a consensus.'
+                        ],
+                        answer: 0,
+                        highlight: 'Disagreements over strategy threatened to cripple the movement more than once.'
+                    }, {
+                        id: 't2q11',
+                        text: 'The underlined word \'chafe\' in the passage most nearly means',
+                        options: ['imprison',
+                            'obey',
+                            'feel relaxed',
+                            'feel annoyed',
+                            'feel free'
+                        ],
+                        answer: 3,
+                        highlight: 'many American women were beginning to chafe against what historians have called the "Cult of True Womanhood"'
+                    }, {
+                        id: 't2q12',
+                        text: 'The passage mainly deals with',
+                        options: ['reform groups that helped create a new society in the US',
+                            'the history of the women\'s suffrage movement in the US',
+                            'the contrast between the Cult of True Womanhood and the women\'s suffrage',
+                            'the current status of women in the US',
+                            'the obstacles encountered during the fight to win the right to vote for women'
+                        ],
+                        answer: 1,
+                        highlight: 'The women\'s suffrage movement in the United States began in earnest in the decades before the Civil War.'
+                    }]
+                }, {
+                    id: 't2p5',
+                    label: 'Atlantis',
+                    text: `<p>The writing of the ancient Greek philosopher Plato contained so much truth about the human condition, but one of his most famous stories, the cataclysmic destruction of the ancient civilization of Atlantis, is almost certainly false. So why is this story still repeated more than 2,300 years after Plato's death? "It's a story that captures the imagination," says James Romm, a professor of classics at Bard College in New York. "It's a great myth. It has a lot of elements that people love to fantasize about." Plato told the story of Atlantis around 360 BCE. The founders of Atlantis, he said, created a utopian civilization and became a great naval power. Their home was made up of concentric islands separated by wide moats and linked by a canal that penetrated to the centre. The lush islands contained gold, silver and other precious metals and supported an abundance of rare, exotic wildlife. There are many theories about where Atlantis was—in the Mediterranean, off the coast of Spain, even under what is now Antarctica. Plato said Atlantis existed about 9,000 years before his own time and that its story had been passed down by poets, priests and others. But Plato's writings about Atlantis are the only known records of its existence.</p>`,
+                    questions: [{
+                        id: 't2q13',
+                        text: 'The author of the passage',
+                        options: ['collaborated with James Romm to refute the myth Plato created',
+                            'witnessed things that confirmed Plato\'s story of Atlantis',
+                            'apparently envies the popularity Plato still enjoys after so many centuries',
+                            'appears to be eager to undermine the respect others feel for Plato',
+                            'seems to be sceptical about the story of Atlantis'
+                        ],
+                        answer: 4,
+                        highlight: 'one of his most famous stories, the cataclysmic destruction of the ancient civilization of Atlantis, is almost certainly false.'
+                    }, {
+                        id: 't2q14',
+                        text: 'It can be inferred from the passage that according to Plato,',
+                        options: ['nobody before him had ever mentioned Atlantis',
+                            'Atlantis reached its peak during his own lifetime',
+                            'it took a long time for Atlantis to collapse',
+                            'Atlantis met the highest standards of perfection',
+                            'it was the founders of Atlantis that destroyed it as well'
+                        ],
+                        answer: 3,
+                        highlight: 'The founders of Atlantis, he said, created a utopian civilization and became a great naval power.'
+                    }, {
+                        id: 't2q15',
+                        text: 'One point made in the passage is that',
+                        options: ['James Romm disapproves of the way people think about Atlantis',
+                            'people located the relics from Atlantis in several places around the world',
+                            'the story of Atlantis continues to attract people',
+                            'what Plato said about Atlantis was corroborated by other scholars',
+                            'wild animals were rare on Atlantis'
+                        ],
+                        answer: 2,
+                        highlight: '"It\'s a story that captures the imagination," says James Romm'
+                    }]
+                }, {
+                    id: 't2p6',
+                    label: 'Art for everyone',
+                    text: `<p>Drawing or painting is, for many, a relaxing weekend pastime. For the proponents of art therapy, making art is an activity which can be not only gratifying but also therapeutic. But for the majority of the population, arts are better left to the masters. There is a widespread belief that we, the ordinary people, who are not touched by a stroke of genius, should keep safe distance from the preserve of the gifted few. This elitist perception about high art dates centuries back, at least to the days of the Renaissance. It creates a dual opposition in the minds of people, namely between the talented maker and us, the hapless masses who cannot draw a straight line. This mentality alienates most people from their own creativity as they take art either too seriously or not seriously at all. That is to say, most people think of art as either a grand endeavour or as a mere hobby. But making art is neither superhuman nor a substitute for a crossword.</p>`,
+                    questions: [{
+                        id: 't2q16',
+                        text: 'It can be understood from the passage that the writer',
+                        options: ['agrees that making art is for the few',
+                            'doesn\'t show a tendency for an idea about how art should be perceived',
+                            'believes that art is not something that should be seen as therapeutic',
+                            'thinks that art cannot be a hobby but an activity for professionals',
+                            'disagrees with those who see art as either for an elite or as a fun activity'
+                        ],
+                        answer: 4,
+                        highlight: 'But making art is neither superhuman nor a substitute for a crossword.'
+                    }, {
+                        id: 't2q17',
+                        text: 'Which of the following is the closest in meaning to the underlined word \'hapless\' in the passage?',
+                        options: ['hopeful',
+                            'unlucky',
+                            'dangerous',
+                            'random',
+                            'strange'
+                        ],
+                        answer: 1,
+                        highlight: 'the hapless masses who cannot draw a straight line'
+                    }, {
+                        id: 't2q18',
+                        text: 'The passage is mainly about',
+                        options: ['the importance of art for everyone',
+                            'the distorted or simplistic perceptions most people harbour about art',
+                            'the disputes between those who think art can be a mere hobby and those who don\'t',
+                            'the wrong perceptions of people who either have no talent or despise the talented ones',
+                            'the problems created by incompetent artists reducing art\'s status to a mere hobby'
+                        ],
+                        answer: 1,
+                        highlight: 'This elitist perception about high art dates centuries back'
+                    }]
+                }, {
+                    id: 't2p7',
+                    label: 'Vietnamese in Czech',
+                    text: `<p>One might be surprised by the fact that the second largest immigrant community in the Czech Republic are Vietnamese. The many Ukrainians living there only recently bypassed them in numbers as a result of seeking refuge from the war conflict in their home country. Vietnamese were invited as workers to East Germany and also to the present dissolved state of Czechoslovakia. The majority of the Vietnamese, who invariably used to be employed as factory workers up until the 90s, run their own small businesses. The so-called Asian restaurants are cropping up everywhere in this country. They are seldom called Vietnamese, though, as their country is associated with industrial labourers, so the more exotic name, Asian, is preferred. On top of that, despite their claim to authenticity, these restaurants adapt their food to the Czechs' expectations about taste. Czechs don't have a palate for very spicy food. Therefore, Asian restaurants try not to stray away from Czechs' culinary habits and serve what could be called Asian-fusion.</p>`,
+                    questions: [{
+                        id: 't2q19',
+                        text: 'It is clear from the passage that Vietnamese restaurants in the Czech Republic',
+                        options: ['try to appear Asian in order to lure locals',
+                            'offer the authentic Vietnamese taste',
+                            'are not popular in the country due to the public\'s prejudice against Vietnamese',
+                            'try to conform to their clients\' taste',
+                            'have lost their identity, which is a problem'
+                        ],
+                        answer: 3,
+                        highlight: 'Asian restaurants try not to stray away from Czechs\' culinary habits and serve what could be called Asian-fusion.'
+                    }, {
+                        id: 't2q20',
+                        text: 'It can be understood from the passage that in the Czech Republic',
+                        options: ['Vietnamese run most small businesses',
+                            'most restaurants are run by foreigners',
+                            'people have negative attitude towards Asian people and especially Vietnamese',
+                            'people have stereotypes about the Vietnamese',
+                            'people are used to spicy Vietnamese cuisine'
+                        ],
+                        answer: 3,
+                        highlight: 'They are seldom called Vietnamese, though, as their country is associated with industrial labourers, so the more exotic name, Asian, is preferred.'
+                    }, {
+                        id: 't2q21',
+                        text: 'It is implied in the passage that the Vietnamese minority in the Czech Republic',
+                        options: ['had to adapt to the new economical developments and local conditions',
+                            'are humiliated by most of the Czechs',
+                            'were a lot better off when they were first invited to Czechoslovakia',
+                            'are nowadays being gradually replaced by Ukrainians and face increased competition',
+                            'cannot fulfil Czechs\' expectations about cuisine'
+                        ],
+                        answer: 0,
+                        highlight: 'The majority of the Vietnamese, who invariably used to be employed as factory workers up until the 90s, run their own small businesses.'
+                    }]
+                }, {
+                    id: 't2p8',
+                    label: 'Korean movies',
+                    text: `<p>South Korean movies have a long established reputation for too much violence, graphic detail and too much onscreen bloodshed. At first glance, it seems that Korean audiences have a particular liking for such films. However, on closer observation, things reveal a more complex situation. As the entertainment industry becomes more and more globalized, international audiences become increasingly important. Therefore, if Korean filmmakers want to have a slice of the pie from overseas revenues, they have to brand themselves more successfully. That's why, Koreans try to give to their films a particular characteristic, which will allow them to stand out from the crowd of competing productions in some respect. As a result, they invest in high levels of violence in a bid to make their production more appealing and marketable to international audiences.</p>`,
+                    questions: [{
+                        id: 't2q22',
+                        text: 'What is true about Korean filmmakers?',
+                        options: ['They are not as successful as their contemporaries in other countries.',
+                            'They respond to the local demand for violence, but their films are not marketable abroad.',
+                            'They sustain a profile of violence to make their movies marketable at home and abroad.',
+                            'They make films only for international audiences.',
+                            'They try to make movies appealing to a minority.'
+                        ],
+                        answer: 2,
+                        highlight: 'they invest in high levels of violence in a bid to make their production more appealing and marketable to international audiences.'
+                    }, {
+                        id: 't2q23',
+                        text: 'It can be understood from the passage that the violent style of Korean movies',
+                        options: ['is hardly appealing to the international film industry',
+                            'is totally opposed to the taste of the international audience',
+                            'is appreciated by only Korean audiences',
+                            'tries to meet local demand as well as the demand in the global film market',
+                            'doesn\'t make the Korean film makers a global success'
+                        ],
+                        answer: 3,
+                        highlight: 'they invest in high levels of violence in a bid to make their production more appealing and marketable to international audiences.'
+                    }, {
+                        id: 't2q24',
+                        text: 'Which of the following can be inferred from the passage?',
+                        options: ['The need for marketability can dictate the style of an entire national film industry nowadays.',
+                            'In a global market, filmmakers will have to exaggerate violence to be internationally acceptable.',
+                            'Korean films cannot compete with other countries, so they try to appear violent.',
+                            'The writer of the passage has fears as to the tendency of people towards violence.',
+                            'Korean filmmakers sacrifice quality for profits by relying on violent scenes.'
+                        ],
+                        answer: 0,
+                        highlight: 'As the entertainment industry becomes more and more globalized, international audiences become increasingly important.'
+                    }]
+                }]
+            },
+
+            // ─── TEST 3 ───
+            test3: {
+                passages: [{
+                    id: 't3p1',
+                    label: 'Credit card trap',
+                    text: `<p>We all know how easy it is to be lured into using a credit card and becoming seriously indebted before even realizing it. Young people are particularly prone to this sort of financial irresponsibility. They live for the present, so they can be easily conned into undermining their future. One of the most dangerous ways of putting people into deep debt is the so-called teaser rates. At the outset, the credit card company will charge a fraction of their standard interest rate, normally up to 29 per cent. Once into the trap, people will realize that after a period of happiness, their monthly payments will increase sharply and before they know, they will struggle to keep up with payments. Reading the small print on a contract is essential, but even that will not put prospective debtors on the safe side. Banks can change the terms without any legal consequences. These alterations are usually against the interests of customers who are often not even notified properly about such changes.</p>`,
+                    questions: [{
+                        id: 't3q1',
+                        text: 'It can be understood from the passage that young people who use credit cards',
+                        options: ['frequently suffer from fraud as they are gullible',
+                            'avoid taking responsibilities for their loans',
+                            'are more liable to lose control of their finances',
+                            'are particularly targeted by banks as they consume more than adults',
+                            'do not understand the terms of their loans due to the small print on the contract'
+                        ],
+                        answer: 2,
+                        highlight: 'Young people are particularly prone to this sort of financial irresponsibility. They live for the present, so they can be easily conned into undermining their future.'
+                    }, {
+                        id: 't3q2',
+                        text: 'What can be inferred from the passage about the banks?',
+                        options: ['They often charge more money than they should.',
+                            'They change the terms of credit cards unlawfully.',
+                            'They use tricks to increase their interest rates.',
+                            'They are trying to maximize their profit, often while behaving in dubious ways.',
+                            'They distort the conditions written on the contracts before customers sign them.'
+                        ],
+                        answer: 3,
+                        highlight: 'Banks can change the terms without any legal consequences. These alterations are usually against the interests of customers who are often not even notified properly about such changes.'
+                    }, {
+                        id: 't3q3',
+                        text: 'Which of the following could be the best title for the passage?',
+                        options: ['How to Obtain Credit Cards',
+                            'The Credit Card Trap',
+                            'Teaser Rates',
+                            'Young People\'s Irresponsible Use of Credit Cards',
+                            'How to Use Credit Cards'
+                        ],
+                        answer: 1,
+                        highlight: 'One of the most dangerous ways of putting people into deep debt is the so-called teaser rates.'
+                    }]
+                }, {
+                    id: 't3p2',
+                    label: 'Bach',
+                    text: `<p>Johann Sebastian Bach is considered by many to be one of the greatest classical composers in history. However, it was not until the 19th century, long after he had died, that he was recognized as the greatest composer of the Baroque era. He was born in Eisenach, Germany, in 1685 into a musical family. His father, a court trumpeter in the service of the Duke Eisenach, taught him to play the violin and harpsichord. During his life, Bach became famous throughout Germany and shortly afterwards across Europe due to his career as a virtuoso organist rather than a composer. Bach became a father to twenty children, seven from his first marriage and thirteen from his second and the last. Unfortunately, only half of his children survived to adulthood. A less well-known fact about Bach is that he was once imprisoned for almost a month by his employer who did not want to let him go. Besieged by diabetes, he died in 1750.</p>`,
+                    questions: [{
+                        id: 't3q4',
+                        text: 'It can be concluded from the passage that Bach',
+                        options: ['was recognized as the best composer in the history of music in the 19th century',
+                            'became a famous composer throughout Europe at the beginning of his career',
+                            'was originally a composer before he became a successful organist',
+                            'while still alive became better known as an organist than a composer',
+                            'would have taken interest in playing instruments if it hadn\'t been for his father'
+                        ],
+                        answer: 3,
+                        highlight: 'During his life, Bach became famous throughout Germany and shortly afterwards across Europe due to his career as a virtuoso organist rather than a composer.'
+                    }, {
+                        id: 't3q5',
+                        text: 'One of the things which is not known by many people is that Bach',
+                        options: ['received hardly any support from his family in the early stages of his musical career',
+                            'became famous throughout Europe late in his career',
+                            'was a captive of his boss who didn\'t want him to leave',
+                            'has been considered the greatest Baroque composer',
+                            'was born in Germany into a family dealing with music'
+                        ],
+                        answer: 2,
+                        highlight: 'A less well-known fact about Bach is that he was once imprisoned for almost a month by his employer who did not want to let him go.'
+                    }, {
+                        id: 't3q6',
+                        text: 'We understand from the passage that Bach',
+                        options: ['had none of his children around before his death',
+                            'was married twice',
+                            'had twenty children, some of whom followed in their father\'s footsteps',
+                            'became a widower twice',
+                            'lived in the 19th century'
+                        ],
+                        answer: 1,
+                        highlight: 'Bach became a father to twenty children, seven from his first marriage and thirteen from his second'
+                    }]
+                }, {
+                    id: 't3p3',
+                    label: 'Christmas mail',
+                    text: `<p>Sending letters and parcels before Christmas might become quite a tricky business in many countries across the world. Royal Mail presents a service on its website which shows the latest posting day to many countries if you want your mail to be delivered just before Christmas Day. For most countries in Europe, this date is about one month before Christmas unless airmail is used, which is a mail transport system in which at least one leg of the journey is completed by aircraft. It usually has a shorter delivery time. However, for other mainly overseas countries such as Australia or the United States, mail usually has to be posted by the end of October. If you want to make sure that your mail will be delivered in time, check the Royal Mail website. They will refund you if your mail wasn't delivered on time even though it was sent prior to the last posting day. Alternatively, if you are just after wishing somebody a nice holiday, even though it is definitely not as kind and warm as receiving a letter or a postcard, you can send them a text message.</p>`,
+                    questions: [{
+                        id: 't3q7',
+                        text: 'Which of the following best describes the author\'s opinion?',
+                        options: ['It is a better solution to send somebody a text message rather than a postcard.',
+                            'Royal Mail services are always delayed.',
+                            'Receiving a Christmas letter or a postcard is now out of date.',
+                            'Sending Christmas cards is nicer, but it requires more planning than text messaging.',
+                            'Trying to send letters and parcels in time for Christmas is impossible.'
+                        ],
+                        answer: 3,
+                        highlight: 'Alternatively, if you are just after wishing somebody a nice holiday, even though it is definitely not as kind and warm as receiving a letter or a postcard, you can send them a text message.'
+                    }, {
+                        id: 't3q8',
+                        text: 'We learn from the passage that Royal Mail',
+                        options: ['will always deliver your mail if you post it in time',
+                            'informs the public about Christmas postal details on its website',
+                            'will refund customers if their mail is delivered before Christmas Day',
+                            'does not provide a service for sending Christmas mail overseas',
+                            'doesn\'t deliver mail via air'
+                        ],
+                        answer: 1,
+                        highlight: 'Royal Mail presents a service on its website which shows the latest posting day to many countries'
+                    }, {
+                        id: 't3q9',
+                        text: 'It is stated in the passage that Christmas posting to overseas countries',
+                        options: ['is more expensive via airmail',
+                            'requires a longer time than to Europe',
+                            'doesn\'t take so long when it is done by Royal Mail',
+                            'is only provided by certain companies such as Royal Mail',
+                            'is not as problematic as somewhere else'
+                        ],
+                        answer: 1,
+                        highlight: 'For most countries in Europe, this date is about one month before Christmas unless airmail is used. However, for other mainly overseas countries such as Australia or the United States, mail usually has to be posted by the end of October.'
+                    }]
+                }, {
+                    id: 't3p4',
+                    label: 'Raisins experiment',
+                    text: `<p>First, we pour soda water into a large cup and drop 5-6 raisins into the liquid. They will sink to the bottom as they are slightly denser than soda. By adding a few drops of vinegar into the cup, we'll create carbon dioxide gas bubbles which will attach themselves to the rough surfaces of raisins making them float toward the top of the cup because of the increase in buoyancy. When they get to the top of the soda, most of the bubbles burst and the carbon dioxide gas escapes into the air and that causes raisins to lose buoyancy and sink back down to the bottom of the cup. The whole process, called carbonation, starts all over again until most of the carbon dioxide escapes and the soda goes flat. Furthermore, as the raisins get soggy, they become too heavy to float. We can conduct this test adding lemon juice and other acids into the soda water. This is a basic test of reaction between acids and alkalis.</p>`,
+                    questions: [{
+                        id: 't3q10',
+                        text: 'Which of the following is not true according to the passage?',
+                        options: ['Lemon juice does not work as well as vinegar.',
+                            'The buoyancy of raisins increases when we add vinegar.',
+                            'Soda is not as dense as raisins.',
+                            'Soda stops creating bubbles as it loses its carbon dioxide.',
+                            'The more raisins soak water, the heavier they become.'
+                        ],
+                        answer: 0,
+                        highlight: 'We can conduct this test adding lemon juice and other acids into the soda water. This is a basic test of reaction between acids and alkalis.'
+                    }, {
+                        id: 't3q11',
+                        text: 'Which of the following can be concluded from the passage?',
+                        options: ['Raisins move up and down in water.',
+                            'Raisins stay at the top of the liquid in a cup with soda water.',
+                            'When we put raisins in soda water, it creates bubbles around raisins.',
+                            'Soda is denser than raisins.',
+                            'During carbonation, raisins move up and down.'
+                        ],
+                        answer: 4,
+                        highlight: 'The whole process, called carbonation, starts all over again until most of the carbon dioxide escapes and the soda goes flat.'
+                    }, {
+                        id: 't3q12',
+                        text: 'According to the passage, the carbon dioxide bubbles',
+                        options: ['are fewer in lemon juice than they are in vinegar',
+                            'cover the whole surface of raisins equally',
+                            'serve as life jackets for raisins at the bottom as well as at the top of the liquid',
+                            'are caused by mixing soda with any denser liquid',
+                            'mostly break when they reach the top of the liquid'
+                        ],
+                        answer: 4,
+                        highlight: 'When they get to the top of the soda, most of the bubbles burst and the carbon dioxide gas escapes into the air'
+                    }]
+                }, {
+                    id: 't3p5',
+                    label: 'Literature review',
+                    text: `<p>The literature review for an essay should be written in three stages. The first stage ought to include a plan for what to write based on a proposal for research. The next stage concerns writing the first draft. The sections of the literary review should be organized so that they match the themes assumed to emerge within the essay. The author needs to look for similarities among the research articles and link them to the themes in literary review. In the last stage, when the data have been collected and analyzed, the first draft needs to be rewritten in order to provide a more cohesive background for the themes that came out from the data analysis. The themes on which an argument will be constructed will be included in a body of the final draft of the review along with an introduction and a conclusion.</p>`,
+                    questions: [{
+                        id: 't3q13',
+                        text: 'According to the passage, which of the following is the key to a successful literature review?',
+                        options: ['Initial planning and rewriting after new findings from the author\'s research have come up',
+                            'Being consistent with the form that includes introduction, body and conclusion',
+                            'Including all the research articles within the themes',
+                            'Finding contradictory conclusions from other works',
+                            'Applying all the methods of research'
+                        ],
+                        answer: 0,
+                        highlight: 'The first stage ought to include a plan for what to write based on a proposal for research. ... In the last stage, when the data have been collected and analyzed, the first draft needs to be rewritten'
+                    }, {
+                        id: 't3q14',
+                        text: 'It can be understood from the passage that the last stage of the literature review writing',
+                        options: ['includes a proposal for what to write',
+                            'is identical with the second stage but doesn\'t include an introduction',
+                            'comes after the data analysis',
+                            'should include the articles about research with identical findings to the author\'s',
+                            'should only include online journal articles'
+                        ],
+                        answer: 2,
+                        highlight: 'In the last stage, when the data have been collected and analyzed, the first draft needs to be rewritten'
+                    }, {
+                        id: 't3q15',
+                        text: 'The main purpose of the passage is to',
+                        options: ['remind readers that preparing a draft is more important than planning',
+                            'give examples of a literature review',
+                            'emphasise the importance of consulting an authority in statistical research',
+                            'warn readers about the difficulties of writing a literature review',
+                            'explain how to write a successful literature review'
+                        ],
+                        answer: 4,
+                        highlight: 'The literature review for an essay should be written in three stages.'
+                    }]
+                }, {
+                    id: 't3p6',
+                    label: 'The Rescuers',
+                    text: `<p>The Rescuers is an old classic Disney story about a little girl from an orphanage. She is unfortunate enough to be adopted by a horrible Medusa, a woman whose great desire is to find the world's largest diamond, the Devil's Eye, which is hidden in a well in the area of Devil Bayou. She keeps the girl in an old pirate ship guarded by her two ferocious alligator pets as she uses her tiny figure to climb down the wall to look for the diamond. Strangely enough the girl is, in the end, saved by two mouse members of Rescue Aid Society thanks to a note she has left inside a bottle that is later found by the very two mice. Rescue Aid Society is an international organization dedicated to help abduction victims around the world shadowing the United Nations. The film has been praised by critics for inclusion of delegates from Arab countries in the Rescue Aid Society.</p>`,
+                    questions: [{
+                        id: 't3q16',
+                        text: 'Which of the following can be understood from the passage?',
+                        options: ['Medusa has a variety of pets.',
+                            'The girl is happy that she has been finally adopted.',
+                            'The alligators are tamed and so they do not give harm to strangers.',
+                            'The girl is liberated at last.',
+                            'The girl is held captive in the well.'
+                        ],
+                        answer: 3,
+                        highlight: 'the girl is, in the end, saved by two mouse members of Rescue Aid Society'
+                    }, {
+                        id: 't3q17',
+                        text: 'According to the passage,',
+                        options: ['a large group of members of the United Nations have rescued the girl',
+                            'the girl is willingly helping Medusa to find the diamond',
+                            'the girl is kidnapped by the Rescue Aid Society',
+                            'the Rescuers was the first film to present Arabs as members of the UN',
+                            'the girl is being misused by Medusa for her own desire to seize a valuable stone'
+                        ],
+                        answer: 4,
+                        highlight: 'She keeps the girl in an old pirate ship guarded by her two ferocious alligator pets as she uses her tiny figure to climb down the wall to look for the diamond.'
+                    }, {
+                        id: 't3q18',
+                        text: 'The underlined word \'abduction\' in the passage is closest in meaning to',
+                        options: ['kidnapping',
+                            'total',
+                            'illness',
+                            'accident',
+                            'shock'
+                        ],
+                        answer: 0,
+                        highlight: 'Rescue Aid Society is an international organization dedicated to help abduction victims around the world'
+                    }]
+                }, {
+                    id: 't3p7',
+                    label: 'Armadillos',
+                    text: `<p>The word armadillo refers to various armoured mammals found mainly in tropical and subtropical regions of Central and South America. Most of the 20 species inhabit open areas, such as grasslands, but some also live in forests. Armadillos live alone, in pairs or in small groups. Emerging from their burrows primarily at night, these efficient diggers use their keen sense of smell to locate food. They feed on termites and other insects, along with vegetation, small animals and larvae. The common nine-banded armadillo is used in leprosy research because it is naturally susceptible to the disease and because the microbe that causes leprosy does not grow in laboratory culture media. Armadillos are timid. When threatened, they retreat to their burrows or, if caught in the open, draw in their feet so that their armour touches the ground. Some armadillos are able to roll into a solid ball as a means of protecting their vulnerable underpants. Extinct relatives of today's armadillos included a 2-metre, 230-kg beast that roamed Florida as recently as 10,000 years ago. It is not certain whether pre-Columbian humans contributed to this armadillo's extinction.</p>`,
+                    questions: [{
+                        id: 't3q19',
+                        text: 'According to the passage, what is true about armadillos?',
+                        options: ['They appear mostly during the day.',
+                            'They have grown in size over the course of history.',
+                            'They don\'t tend to exhibit aggressive behaviour.',
+                            'Pre-Columbian humans caused most kinds to die out.',
+                            'The majority of them are used for medical purposes.'
+                        ],
+                        answer: 2,
+                        highlight: 'Armadillos are timid. When threatened, they retreat to their burrows or, if caught in the open, draw in their feet so that their armour touches the ground.'
+                    }, {
+                        id: 't3q20',
+                        text: 'It can be inferred that armadillos',
+                        options: ['inhabit all the continents except America',
+                            'contribute to the growth of larvae',
+                            'are disease-resistant',
+                            'refrain from eating meat',
+                            'rely on their sense of smell to detect food'
+                        ],
+                        answer: 4,
+                        highlight: 'these efficient diggers use their keen sense of smell to locate food.'
+                    }, {
+                        id: 't3q21',
+                        text: 'The passage primarily focuses on',
+                        options: ['the similarities between different armadillo species',
+                            'the diet and behaviour of armadillos',
+                            'how armadillos adapt to the environment',
+                            'the ways armadillos protect against predators',
+                            'the contrast between different armadillo types'
+                        ],
+                        answer: 1,
+                        highlight: 'The word armadillo refers to various armoured mammals...'
+                    }]
+                }, {
+                    id: 't3p8',
+                    label: 'Cheap airlines',
+                    text: `<p>Cheap flight tickets and a large number of low-cost airlines have changed the way we travel. In the beginning, most people were delighted as they could grab a bargain. Having to pay for in-flight lunch, having to book months in advance or having to land at remote airports appeared as small inconvenience. But the list seems to grow bigger: having to cram into a smaller space, to put up with barely adequate service with non-refundable tickets, baggage restrictions, long queues and so on. All these issues may spoil the experience of flying, making it more of an unpleasant experience. One of the most gratifying things about flying abroad for leisure is the sense of being taken care of, even of feeling privileged and a bit important; if only for a few hours. Now, cheap flights might appeal to thousands who try to travel for less, but they have also turned travelling into a boring, lesser thing.</p>`,
+                    questions: [{
+                        id: 't3q22',
+                        text: 'It is clear from this passage that cheap flights',
+                        options: ['are good opportunities to have the experience of travelling',
+                            'enable more people to experience the pleasure of flying',
+                            'are dull and can take the joy out of a trip',
+                            'have brought a lot of advantages to passengers',
+                            'should be provided all over the world'
+                        ],
+                        answer: 2,
+                        highlight: 'cheap flights might appeal to thousands who try to travel for less, but they have also turned travelling into a boring, lesser thing.'
+                    }, {
+                        id: 't3q23',
+                        text: 'It can be understood from the passage that the so-called cheap airlines',
+                        options: ['undermine safety by lowering the standards',
+                            'are in effect deceiving travellers by not offering what they are supposed to',
+                            'can have negative effects on tourism in the long run',
+                            'compromise the travelling experience badly, so it makes sense to avoid them',
+                            'do not stand by their promises, letting down those who want to enjoy their flight'
+                        ],
+                        answer: 3,
+                        highlight: 'All these issues may spoil the experience of flying, making it more of an unpleasant experience.'
+                    }, {
+                        id: 't3q24',
+                        text: 'The passage is mainly about',
+                        options: ['the trouble airlines go through due to the fact that they sell cheap tickets',
+                            'the problems cheap flights pose concerning risks',
+                            'the side effects of otherwise temptingly cheap ways of travelling',
+                            'the travellers who think they are privileged and need pampering during their flights',
+                            'encouraging people to travel by air'
+                        ],
+                        answer: 2,
+                        highlight: 'cheap flights might appeal to thousands who try to travel for less, but they have also turned travelling into a boring, lesser thing.'
+                    }]
+                }]
+            },
+
+            // ─── TEST 4 ───
+            test4: {
+                passages: [{
+                    id: 't4p1',
+                    label: 'Car consciousness',
+                    text: `<p>One of the most prominent professors of economics says that while British people have class consciousness, in many other countries people have car consciousness instead. In North Europe, status depends heavily on somebody's education and profession. Conversely, in Southern Europe, people tend to pay more attention to wealth. This, in turn, creates an urge to exhibit wealth, to buy expensive cars as status symbols. Of course, in wealthy countries such as Sweden or England, Ferraris and Porsches are a frequent occurrence. Yet, they usually belong to well-established professionals. In Southern European countries, however, people often buy cars to show off even if they have to borrow large amounts of money for this vain task. People who adopt such a superficial and frivolous mentality are unlikely to honour good education and professional integrity. At least, they can drive a BMW loaded with debt.</p>`,
+                    questions: [{
+                        id: 't4q1',
+                        text: 'It is evident that the writer of the passage',
+                        options: ['disapproves of the car consciousness mentality',
+                            'believes that personal taste is important',
+                            'thinks that expensive cars should circulate only in wealthy countries',
+                            'claims that luxurious cars are not sold very much in countries like Sweden',
+                            'has an aversion to expensive car owners and despises them'
+                        ],
+                        answer: 0,
+                        highlight: 'People who adopt such a superficial and frivolous mentality are unlikely to honour good education and professional integrity.'
+                    }, {
+                        id: 't4q2',
+                        text: 'The underlined word \'frivolous\' in the passage is closest in meaning to',
+                        options: ['serious',
+                            'careful',
+                            'smart',
+                            'foolish',
+                            'brave'
+                        ],
+                        answer: 3,
+                        highlight: 'People who adopt such a superficial and frivolous mentality'
+                    }, {
+                        id: 't4q3',
+                        text: 'Which of the following is not true according to the passage?',
+                        options: ['Southern European people buy cars beyond their means in order to gain more respect in their society.',
+                            'People from Southern European countries have different priorities in life compared to the people in North Europe.',
+                            'People in Southern Europe go through a lot of trouble in order to drive more luxury cars.',
+                            'People get loans to buy cars because they cannot become successful professionals.',
+                            'It\'s usually respected people that have luxury cars in Northern Europe.'
+                        ],
+                        answer: 3,
+                        highlight: 'In Southern European countries, however, people often buy cars to show off even if they have to borrow large amounts of money for this vain task.'
+                    }]
+                }, {
+                    id: 't4p2',
+                    label: 'Vitamin C',
+                    text: `<p>Vitamin C is an essential nutrient for our health. Therefore, our body needs a constant supply of it. It can be found in many different forms such as effervescent or chewable tablets and pills. Of course, it can also be found in food sources such as fruit, but people seem to prefer its manufactured forms as they offer large doses. For example, a 1000 mg tablet is equivalent to a large number of oranges. Swallowing a pill instead of having to eat a dozen of oranges is an obvious advantage. What the pharmaceutical companies which sell them avoid mentioning is that our body cannot absorb more than 200 mg in one go. Our greed for more is one of the factors which add pressure on these manufacturers to increase the doses to the impressive mark of 1000 mg or more. But in the end, we get our 200 mg and the satisfaction of consuming 1000 mg. The public are happy.</p>`,
+                    questions: [{
+                        id: 't4q4',
+                        text: 'It is clear from the passage that companies which manufacture vitamin C',
+                        options: ['can have an adverse effect on people\'s health due to their misleading products',
+                            'produce pills which have no effect at all',
+                            'do not disclose a piece of information that is of vital importance to public health',
+                            'tend to market their products in illegal ways',
+                            'tell half-truths about their products'
+                        ],
+                        answer: 2,
+                        highlight: 'What the pharmaceutical companies which sell them avoid mentioning is that our body cannot absorb more than 200 mg in one go.'
+                    }, {
+                        id: 't4q5',
+                        text: 'The main purpose of this passage is to',
+                        options: ['encourage readers to take vitamin C supplements',
+                            'show the advantages and disadvantages of vitamin C intake',
+                            'give examples of vitamin C resources',
+                            'convince people that taking vitamin C tablets is unnecessary',
+                            'inform readers about vitamin C resources and how much of it they need'
+                        ],
+                        answer: 4,
+                        highlight: 'Vitamin C is an essential nutrient for our health.'
+                    }, {
+                        id: 't4q6',
+                        text: 'The writer of the passage implies that a vitamin C pill or tablet',
+                        options: ['often contains more vitamin than necessary',
+                            'cannot replace a large amount of oranges',
+                            'is useful only when it contains more than 200 mg',
+                            'can be dangerous when it contains more than 1000 mg',
+                            'is not as beneficial to health as a large number of oranges'
+                        ],
+                        answer: 0,
+                        highlight: 'a 1000 mg tablet is equivalent to a large number of oranges. ... our body cannot absorb more than 200 mg in one go.'
+                    }]
+                }, {
+                    id: 't4p3',
+                    label: 'Flamingos & salmon',
+                    text: `<p>Flamingos are long-legged wading birds that are usually covered in bright pink feathers. With a name that derives from the Spanish or Portuguese word meaning "flame-coloured," the birds are known for their vibrant appearance. Though it is their most-famous quality, the pink of the flamingo's feathers is not a hereditary trait. They are in fact born dull grey, but, as Encyclopaedia Britannica explains, "the bright pink colour of flamingos comes from beta carotene, a red-orange pigment that's found in high numbers within the algae, larvae, and brine shrimp that flamingos eat in their wetland environment." Salmon are similar in that sense—their meat is naturally grey as well, and wild salmon fillets are pink because the fish, when alive, feast on krill and shrimp. Farm-raised salmon fillets, therefore, shouldn't be pink when they hit our dinner plates, but they are because consumers would object to grey salmon. It is stated that salmon farmers spike their artificial diet with pinkifying pellets to make the fish look natural even though in reality, the exact opposite is true.</p>`,
+                    questions: [{
+                        id: 't4q7',
+                        text: 'Which of the following could be the best title for the passage?',
+                        options: ['Unnatural Pinkness',
+                            'Salmon Are Actually Grey',
+                            'Nature Changes Colour',
+                            'They Aren\'t Innately Pink',
+                            'Wildly Grey Becomes Pinkish'
+                        ],
+                        answer: 3,
+                        highlight: 'the pink of the flamingo\'s feathers is not a hereditary trait. They are in fact born dull grey'
+                    }, {
+                        id: 't4q8',
+                        text: 'Which of the following statements is true of the colour of flamingos and salmon?',
+                        options: ['Grey turns into pink because of their excessive diets',
+                            'They are artificially made pink to attract consumers',
+                            'What they prey on alters their pigmentation',
+                            'They are solely notorious for their pinkness',
+                            'Even when raised in farms, their diet reflects their nature'
+                        ],
+                        answer: 2,
+                        highlight: 'the bright pink colour of flamingos comes from beta carotene... wild salmon fillets are pink because the fish, when alive, feast on krill and shrimp.'
+                    }, {
+                        id: 't4q9',
+                        text: 'It is pointed out in the passage that',
+                        options: ['flamingos have a genetic feature that makes them look different',
+                            'depending on what they eat in dry areas, flamingos can stay grey',
+                            'untamed salmon mainly eats what keeps its natural colour grey',
+                            'the name \'flamingo\' is not originally an English word but a borrowed one',
+                            'people who consume salmon do not know where it comes from and hence prefer them pink'
+                        ],
+                        answer: 3,
+                        highlight: 'With a name that derives from the Spanish or Portuguese word meaning "flame-coloured"'
+                    }]
+                }, {
+                    id: 't4p4',
+                    label: 'Sunlight & brain',
+                    text: `<p>Sunlight produces a so-called 'feel good' psychological factor. This is related to the chemical balance of the brain which regulates mood. Sunlight triggers the production of a specific type of chemical in the brain called endorphins which condition the way we feel. So, it is not only the case that a sunny day makes us feel happier because we like the sun, but the sun literally influences our brain in biochemical terms. Of course, it is not easy to distinguish between emotional and biochemical terms when it comes to the function of the human brain. Yet, we respond emotionally to many things we like without experiencing the immediate influx of endorphins that sunlight causes. Chronic depression in wealthy countries such as Finland is epidemic, and it shows the consequences of sunlight deprivation. As in most cases of relevant research, it is mostly the extreme chronic conditions which reveal how the brain works.</p>`,
+                    questions: [{
+                        id: 't4q10',
+                        text: 'It can be understood from the passage that Finns face a high rate of depression',
+                        options: ['because Finland suffers from economic problems',
+                            'due to their specific brain characteristics',
+                            'mostly because of social problems and health issues',
+                            'as a result of the local weather',
+                            'because brain science is not advanced'
+                        ],
+                        answer: 3,
+                        highlight: 'Chronic depression in wealthy countries such as Finland is epidemic, and it shows the consequences of sunlight deprivation.'
+                    }, {
+                        id: 't4q11',
+                        text: 'It is clear from the passage that the human brain',
+                        options: ['needs a doctor\'s assistance',
+                            'is influenced by ambient light',
+                            'needs to produce chemicals so that we can get the most health benefit from sunlight',
+                            'functions effectively just with the help of sunlight',
+                            'runs on chemicals, not natural food sources'
+                        ],
+                        answer: 1,
+                        highlight: 'the sun literally influences our brain in biochemical terms.'
+                    }, {
+                        id: 't4q12',
+                        text: 'Which of the following could be the best title for the passage?',
+                        options: ['Mind over Matter',
+                            'The Effects of Sunlight on Emotional State',
+                            'Biology, Psychology and Physics',
+                            'Brain Science',
+                            'Depression and Northern Countries'
+                        ],
+                        answer: 1,
+                        highlight: 'Sunlight produces a so-called \'feel good\' psychological factor.'
+                    }]
+                }, {
+                    id: 't4p5',
+                    label: 'Population',
+                    text: `<p>About 8 billion people inhabit the Earth now. To get a better picture of this, one should consider that there are, among a huge number of threatened and endangered species, perhaps 100,000 gorillas, half as many polar bears and no more than a few thousand tigers. The human population has grown nearly tenfold especially over the last three hundred years and has increased four times in the last hundred years. This monumental historical development has had profound implications on the relationship of our species to its habitats and has greatly intensified our impact on the environment. However, no less noteworthy are the signs that the human population explosion has begun to abate in our generation. It is expected that our numbers will have risen to one and a half times what it is now by the time it stops doing so, and what's more, quite a few researchers estimate that a decline will be inevitable.</p>`,
+                    questions: [{
+                        id: 't4q13',
+                        text: 'Which of the following could be deduced from the passage?',
+                        options: ['The rise in the human population is a relatively recent development.',
+                            'Scientists have recently been observing a drop in the human population.',
+                            'The acceleration of the rise in the human population cannot be curbed.',
+                            'A century ago there were four times as few people as there are now.',
+                            'The earth is capable of sustaining any number of people.'
+                        ],
+                        answer: 3,
+                        highlight: 'has increased four times in the last hundred years.'
+                    }, {
+                        id: 't4q14',
+                        text: 'It is clear from the passage that',
+                        options: ['technology will help curb the sharp rise soon',
+                            'there are four times more humans than the next most populous species',
+                            'when the human population peaks, it will have risen to almost twelve billion',
+                            'scientists doubt the rise will stop once it becomes one and a half times what it is now',
+                            'very few researchers believe a drop in the number of people cannot be stopped'
+                        ],
+                        answer: 2,
+                        highlight: 'It is expected that our numbers will have risen to one and a half times what it is now'
+                    }, {
+                        id: 't4q15',
+                        text: 'According to the passage, which of the following is true?',
+                        options: ['Gorillas are by far the most crowded mammals after humans.',
+                            'There has hardly been any difference in the number of other species in the last three hundred years.',
+                            'There are nearly as many bears as there are gorillas.',
+                            'The changes in our environment are the main cause of the population rise.',
+                            'The fact that there are more humans on earth now has considerable effects on it.'
+                        ],
+                        answer: 4,
+                        highlight: 'This monumental historical development has had profound implications on the relationship of our species to its habitats and has greatly intensified our impact on the environment.'
+                    }]
+                }, {
+                    id: 't4p6',
+                    label: 'Collective intelligence',
+                    text: `<p>Since antiquity, the social organization of insects such as ants and bees has been a source of inspiration for thinkers, politicians and philosophers. These insects appear to have highly sophisticated ways of structuring their 'societies', dividing labour, communicating information and even making collective decisions. However, on the flip side, when an insect such as an ant becomes isolated, it seems unable to behave in any meaningful way. According to scientists, this can be described as a form of collective intelligence. A colony of ants, or a beehive, is not a sum of quirkily intelligent insects, but, rather, a sum of 'units' which automatically mirror, or adapt to, what their peer group does. A very large number of insects with limited intelligence come together and form a unit which behaves in sophisticated, intelligent ways. Nowadays, computer scientists draw inspiration from these models of intelligent organization and try to develop large clusters of computers or small robots which combine forces, forming an extremely capable whole which is more than merely the sum of its parts.</p>`,
+                    questions: [{
+                        id: 't4q16',
+                        text: 'It can be understood from the passage that insects such as bees and ants',
+                        options: ['cannot make decisions without elaborating their options with their peer group',
+                            'help many scientists to design computers',
+                            'cannot form societies of high intelligence',
+                            'would not be able to form complex social structures if they were not guided by robots',
+                            'appear to reflect behaviour rather than think independently'
+                        ],
+                        answer: 4,
+                        highlight: 'A colony of ants, or a beehive, is not a sum of quirkily intelligent insects, but, rather, a sum of \'units\' which automatically mirror, or adapt to, what their peer group does.'
+                    }, {
+                        id: 't4q17',
+                        text: 'Which of the following can be inferred from the passage?',
+                        options: ['Scientists try to draw inspiration from the same sources with ancient thinkers.',
+                            'Science often draws on nature in order to make technological breakthroughs.',
+                            'Biologists work with computer scientists as they hope to benefit from exchanging ideas.',
+                            'The close study of insects has recently gained great importance for science today.',
+                            'Scientists from different fields combine forces in order to explain the mystery of insects.'
+                        ],
+                        answer: 0,
+                        highlight: 'Since antiquity, the social organization of insects such as ants and bees has been a source of inspiration for thinkers, politicians and philosophers. ... computer scientists draw inspiration from these models'
+                    }, {
+                        id: 't4q18',
+                        text: 'Which of the following could be the best title for the passage?',
+                        options: ['Insects, Ants and Bees',
+                            'Insects\' Social Behaviour',
+                            'Nature versus Science',
+                            'Collective Intelligence and its Uses',
+                            'Recreating a Natural Phenomena'
+                        ],
+                        answer: 3,
+                        highlight: 'this can be described as a form of collective intelligence.'
+                    }]
+                }, {
+                    id: 't4p7',
+                    label: 'London tube',
+                    text: `<p>'Tube chaos' is a phrase which is all too familiar to Londoners. London has, in theory, one of the most reliable metro systems in Europe. In practice, however, the 'tube' faces a failure somewhere every 10 minutes on average. Of course, the London Underground has a vast network with many lines and numerous stations, so a passenger is not bound to come across such a failure on any given day. But the ageing system can turn a Londoner's day into a nightmare quite often as entire lines break down almost every week. Many think that what has caused this worsening situation is the fact that the tube has been privatized. The owners of the network aim to maximize profits, according to critics. They allegedly reduce costs by compromising maintenance. If this proves to be true, it is a textbook case of irresponsible entrepreneurship. Trying to keep costs low is one thing, putting the safety of thousands at risk is another matter. After a day of tube chaos, the owners merely stated that their main business is buses, not trains, a peculiar excuse, to say the least.</p>`,
+                    questions: [{
+                        id: 't4q19',
+                        text: 'It can be understood from the passage that the tube in London',
+                        options: ['is unreliable because it is the oldest in Europe',
+                            'can be compared to the metro systems in developing countries',
+                            'is problematic for different reasons',
+                            'is dangerous to use on a daily basis',
+                            'has a track record of fatal accidents'
+                        ],
+                        answer: 2,
+                        highlight: 'the ageing system can turn a Londoner\'s day into a nightmare quite often as entire lines break down almost every week. Many think that what has caused this worsening situation is the fact that the tube has been privatized.'
+                    }, {
+                        id: 't4q20',
+                        text: 'It can be inferred from the passage that the current owners of the tube',
+                        options: ['face criticism which appears to have a sound basis as failures are on the rise',
+                            'should not be held responsible for the failures since the system is old',
+                            'reject accusations that they cannot cope with',
+                            'must invest in infrastructure irrespective of cost even if they go bankrupt',
+                            'should not care about profits at all'
+                        ],
+                        answer: 0,
+                        highlight: 'The owners of the network aim to maximize profits, according to critics. They allegedly reduce costs by compromising maintenance.'
+                    }, {
+                        id: 't4q21',
+                        text: 'It is implied in the passage that the problems the London tube experiences',
+                        options: ['are linked only to its amateurish management',
+                            'have nothing to do with its age',
+                            'will be solved only with a change of ownership',
+                            'are related to both management and the age of the network',
+                            'have made Londoners seek alternative ways of travelling'
+                        ],
+                        answer: 3,
+                        highlight: 'the ageing system ... Many think that what has caused this worsening situation is the fact that the tube has been privatized.'
+                    }]
+                }, {
+                    id: 't4p8',
+                    label: 'Carnivorous plants',
+                    text: `<p>Carnivorous plants are predatory flowering plants that kill animals in order to derive nutrition from their bodies. They capture and kill prey, and they have a mechanism to facilitate digestion of the prey. They also derive a significant benefit from nutrients assimilated from the prey. To put it in more human terms, carnivorous plants eat things like insects, spiders and other small soil and water-living invertebrates, lizards, mice, rats and other small vertebrates. Carnivorous plants pull off this trick using specialized leaves that act as traps. Many traps lure prey with bright colours and nectar. Once caught and killed, the prey is digested by the plant. The plant then absorbs the nutrients made available from the corpse. Most carnivorous plants will grow without consuming prey, but they grow much faster and reproduce much better with nutrients derived from their prey. Not all plants that trap or kill animals are considered carnivorous, though. Some plants capture insects in their flowers to facilitate pollination. They don't kill the pollinators, and if some of the pollinators do die in the flower, it is not to the advantage of the plant.</p>`,
+                    questions: [{
+                        id: 't4q22',
+                        text: 'It is understood from the passage that some carnivorous plants',
+                        options: ['may help facilitate some animals\' digestive process',
+                            'are trapped by the specialized leaves of other plants',
+                            'can survive even if they don\'t feed on prey',
+                            'avoid killing pollinators because it could harm them as well',
+                            'need to feed on each other in order to survive'
+                        ],
+                        answer: 2,
+                        highlight: 'Most carnivorous plants will grow without consuming prey'
+                    }, {
+                        id: 't4q23',
+                        text: 'One can understand from the passage that carnivorous plants',
+                        options: ['are able to use their colouring to attract insects',
+                            'release digestive juices before they trap their prey',
+                            'grow faster by means of a soil-based diet',
+                            'have mistakenly been named plant-eaters',
+                            'fail to trick certain species'
+                        ],
+                        answer: 0,
+                        highlight: 'Many traps lure prey with bright colours and nectar.'
+                    }, {
+                        id: 't4q24',
+                        text: 'The main purpose of the passage is to',
+                        options: ['highlight how carnivorous plants are preyed on',
+                            'clarify a misunderstanding about some plants',
+                            'find middle ground between two conflicting theories',
+                            'explain how carnivorous plants feed',
+                            'teach how to avoid traps set by carnivores'
+                        ],
+                        answer: 3,
+                        highlight: 'Carnivorous plants are predatory flowering plants that kill animals in order to derive nutrition from their bodies.'
+                    }]
+                }]
+            },
+
+            // ─── TEST 5 ───
+            test5: {
+                passages: [{
+                    id: 't5p1',
+                    label: 'Drones in disasters',
+                    text: `<p>The first thing disaster responders do in an emergency is find out what happened, how many people need help and what assistance the survivors need. To get an overview as quickly as possible, disaster managers use everything at their disposal: They read reports, call their local counterparts, drive to the scene of the disaster, request satellite images and check social media. Nowadays, disaster responders have another source of information at their disposal: drones. Drones are small, comparatively cheap and can quickly provide images of a disaster-affected area. Compared to satellites they have two big advantages. Firstly, drone images have a much higher resolution than satellite images, which means that disaster managers get a clearer picture of what is going on. Secondly, drones can fly under the clouds. This is particularly important after hurricanes or typhoons when it often takes two to three days before clouds dissipate and satellites are able to see the ground again. In Ecuador, for instance, following a recent earthquake, the local authorities worked closely with a network of volunteer drone pilots to find out which roads were at risk of being buried by landslides.</p>`,
+                    questions: [{
+                        id: 't5q1',
+                        text: 'We can conclude from the passage that, following a recent earthquake, the local authorities',
+                        options: ['felt obliged to resign on account of the massive landslides',
+                            'attempted to cover up the issue with the help of drone pilots',
+                            'expected to be consulted by drone pilots about the issue',
+                            'accurately predicted which roads would be buried by landslides',
+                            'benefited from some drone pilots free of charge'
+                        ],
+                        answer: 4,
+                        highlight: 'the local authorities worked closely with a network of volunteer drone pilots'
+                    }, {
+                        id: 't5q2',
+                        text: 'We can infer from the passage that drones',
+                        options: ['are not likely to replace satellites',
+                            'barely provide instant imaging of disasters',
+                            'are not affordable to some countries',
+                            'are superior to satellites in certain respects',
+                            'have helped to eliminate disaster risks'
+                        ],
+                        answer: 3,
+                        highlight: 'Compared to satellites they have two big advantages.'
+                    }, {
+                        id: 't5q3',
+                        text: 'The passage mainly deals with',
+                        options: ['landslides and their impact on the surrounding areas',
+                            'how drones can be of use after a disaster',
+                            'when drones were first manufactured',
+                            'the ways in which drones differ from satellites',
+                            'several methods employed to predict disasters'
+                        ],
+                        answer: 1,
+                        highlight: 'disaster responders have another source of information at their disposal: drones.'
+                    }]
+                }, {
+                    id: 't5p2',
+                    label: 'King Midas',
+                    text: `<p>In mythology, Dionysus decided, one day, to reward King Midas for his hospitality and granted him one wish. Midas wished that everything he touched be turned to gold. Dionysus warned him about the dangers of such a wish, but Midas did not take his advice as he was not aware of the consequences. Dionysus gave him the gift. Initially, King Midas was fascinated by his new gift and turned everything he could to gold, including his beloved roses. His attitude changed, however, when he was unable to eat or drink since his food and drink were also changed to gold. He even accidentally killed his daughter when he touched her, and this truly made him realize the depth of his mistake. He prayed Dionysus to take this curse from him. He was told to go to river Pactolous and wash his hands. Then everything he had touched became normal again.</p>`,
+                    questions: [{
+                        id: 't5q4',
+                        text: 'The passage mainly describes',
+                        options: ['Dionysus\'s generosity',
+                            'King Midas\'s hospitality',
+                            'a myth about King Midas',
+                            'a regret Dionysus had',
+                            'the value of gold for people'
+                        ],
+                        answer: 2,
+                        highlight: 'In mythology, Dionysus decided, one day, to reward King Midas'
+                    }, {
+                        id: 't5q5',
+                        text: 'We learn from the passage that in the beginning, Midas',
+                        options: ['had difficulty in deciding on his gift',
+                            'felt sorry about the wish he had made',
+                            'wanted Dionysus to turn his roses into gold',
+                            'was happy about being able to turn objects to gold',
+                            'did not want his guest to be turned into gold'
+                        ],
+                        answer: 3,
+                        highlight: 'Initially, King Midas was fascinated by his new gift and turned everything he could to gold'
+                    }, {
+                        id: 't5q6',
+                        text: 'According to the passage, the very first thing that changed Midas\'s attitude to his gift was',
+                        options: ['the golden food and drink he could not consume',
+                            'losing his amazing appetite',
+                            'the death of his daughter',
+                            'Dionysus\'s warnings about his wish',
+                            'the fact that his roses turned gold'
+                        ],
+                        answer: 0,
+                        highlight: 'His attitude changed, however, when he was unable to eat or drink since his food and drink were also changed to gold.'
+                    }]
+                }, {
+                    id: 't5p3',
+                    label: 'Sugar & hyperactivity',
+                    text: `<p>Many concerned parents believe that there is a link between a child's diet and behaviour. They limit sugary foods, thinking they cause hyperactivity. It is right to restrict these treats, but the reasoning is wrong. These high-calorie foods offer little nutrition and can lead to many health problems, but no scientific evidence says sugar causes hyperactivity. Sugar can provide a short-term energy boost, but that is not the same as hyperactivity. The children at a birthday party acting like little tornadoes probably have more to do with the excitement of being around other kids, rather than the cake. And that unruly boy in the grocery store throwing a fit with a candy clutched in each fist? His parents probably have not set appropriate behaviour limits, and they most likely give him what he wants, which is more candy.</p>`,
+                    questions: [{
+                        id: 't5q7',
+                        text: 'According to the passage, many parents do not want their children to eat sugary foods because they',
+                        options: ['do not want their children to consume junk food as it may cause malnutrition',
+                            'know that the kids will gain a lot of weight',
+                            'are afraid that their children will become lazy if they eat too much sugar',
+                            'do not want their children to run around due to the high energy given by sugar',
+                            'believe that such foods make their children overactive'
+                        ],
+                        answer: 4,
+                        highlight: 'They limit sugary foods, thinking they cause hyperactivity.'
+                    }, {
+                        id: 't5q8',
+                        text: 'Which of the following is true according to the passage?',
+                        options: ['People who associate hyperactivity with consuming sugary foods are wrong.',
+                            'There are hazardous chemicals in sugary foods.',
+                            'Sugary foods have nothing to do with providing energy.',
+                            'Sugary foods pose no threats to health.',
+                            'Scientists warn people against the negative effects of sugary foods.'
+                        ],
+                        answer: 0,
+                        highlight: 'no scientific evidence says sugar causes hyperactivity.'
+                    }, {
+                        id: 't5q9',
+                        text: 'It can be understood from the passage that \'the unruly boy in the grocery store\'',
+                        options: ['is overweight if not obese',
+                            'likes to eat lollies very much',
+                            'has been spoilt by his parents',
+                            'is happy because he has some candy in his hands',
+                            'is fed up with eating candy all the time'
+                        ],
+                        answer: 2,
+                        highlight: 'His parents probably have not set appropriate behaviour limits, and they most likely give him what he wants, which is more candy.'
+                    }]
+                }, {
+                    id: 't5p4',
+                    label: 'Sign language with babies',
+                    text: `<p>Is making sign language with babies the new fad? The answer to this question is a resounding 'no'. People have been making signs—paralinguistic signals—with their babies for years. The most common reason for doing so is an intense desire on the part of a parent or caregiver to find out exactly what is going on in a baby's mind: What does she need? What does she want? What does she observe? It is a fact that infants develop the fine muscles in their hands before they develop those required for speech, so they are equipped to communicate with you before they can speak. That is why most babies invent their own 'signs' to get their meaning across. Communicating with babies via sign language has been proven to be beneficial to speech acquisition through years of research, and it is fun and inspirational.</p>`,
+                    questions: [{
+                        id: 't5q10',
+                        text: 'It can be understood from the passage that signing with babies',
+                        options: ['has recently become so fashionable that more and more parents are learning it',
+                            'can help them learn how to speak',
+                            'is just a waste of time if you want to learn what your baby really needs',
+                            'has been globally used since it is fun both for the parent and the baby',
+                            'is a must for any caregiver to be able to understand the baby'
+                        ],
+                        answer: 1,
+                        highlight: 'Communicating with babies via sign language has been proven to be beneficial to speech acquisition'
+                    }, {
+                        id: 't5q11',
+                        text: 'According to the passage, one advantage of using signs with babies is that it helps',
+                        options: ['caregivers to have many job opportunities',
+                            'babies develop their fine muscles',
+                            'babies learn how to use their hands',
+                            'parents understand the baby\'s needs, wants and thoughts',
+                            'parents to find a qualified caregiver'
+                        ],
+                        answer: 3,
+                        highlight: 'the most common reason for doing so is an intense desire on the part of a parent or caregiver to find out exactly what is going on in a baby\'s mind'
+                    }, {
+                        id: 't5q12',
+                        text: 'Which of the following can be understood from the passage?',
+                        options: ['There is no scientific evidence on whether or not signing with babies is of any use.',
+                            'Only the babies who have their own special signs can communicate with their parents.',
+                            'What babies enjoy most is making their caregiver understand what they want.',
+                            'Many people think it is no use trying to communicate with babies through sign language.',
+                            'The muscles in infants\' hands develop before the ones needed to speak.'
+                        ],
+                        answer: 4,
+                        highlight: 'infants develop the fine muscles in their hands before they develop those required for speech'
+                    }]
+                }, {
+                    id: 't5p5',
+                    label: 'Ancient dams',
+                    text: `<p>The oldest known dam in the world is a masonry and earthen embankment at Jawa in the Black Desert of modern Jordan. The Jawa Dam was built in the 4th millennium BCE to hold back the waters of a small stream and allow increased irrigation production on arable land downstream. Evidence exists of another masonry-faced earthen dam built about 2700 BCE at Sadd el-Kafara, about 30km south of Cairo, Egypt. The Sadd el-Kafara failed shortly after completion when, in the absence of a spillway that could resist erosion, it was overtopped by a flood and washed away. The oldest dam still in use is a rockfill embankment about 6 metres high on the Orontes River in Syria, built about 1300 BCE for local irrigation use. The Assyrians, Babylonians and Persians built dams between 700 and 250 BCE for water supply and irrigation. Contemporary with these was the earthen Ma'rib Dam in the southern Arabian Peninsula, which was more than 15 metres high and nearly 600 metres long. Flanked by spillways, this dam delivered water to a system of irrigation canals for more than 1,000 years. Remains of the Ma'rib Dam are still evident in present-day Ma'rib, Yemen.</p>`,
+                    questions: [{
+                        id: 't5q13',
+                        text: 'Which statement is true about the Jawa Dam?',
+                        options: ['It is still in use, serving its original purpose.',
+                            'The goal was to enable a rise in irrigation capacity.',
+                            'It is made up of solely stone blocks.',
+                            'It has been in existence for four thousand years.',
+                            'The dam in Sadd el-Kafara was modelled after the Jawa Dam.'
+                        ],
+                        answer: 1,
+                        highlight: 'The Jawa Dam was built in the 4th millennium BCE to hold back the waters of a small stream and allow increased irrigation production'
+                    }, {
+                        id: 't5q14',
+                        text: 'It is pointed out in the passage that the Ma\'rib Dam',
+                        options: ['was superior to its contemporaries in terms of height',
+                            'disappeared without a trace',
+                            'lost in competition to other dams',
+                            'was used for over a millennium',
+                            'was regarded as an instant success'
+                        ],
+                        answer: 3,
+                        highlight: 'this dam delivered water to a system of irrigation canals for more than 1,000 years.'
+                    }, {
+                        id: 't5q15',
+                        text: 'Which of the following could be the best title for the passage?',
+                        options: ['Ancient Dams',
+                            'Benefits of Dams',
+                            'How to Build a Dam',
+                            'Modern Dams vs Ancient Dams',
+                            'Irrigation in the Past'
+                        ],
+                        answer: 0,
+                        highlight: 'The oldest known dam in the world...'
+                    }]
+                }, {
+                    id: 't5p6',
+                    label: 'Gardening',
+                    text: `<p>Gardening for food extends far back into prehistory. Gardening for ornamental purposes was also popular in ancient times. Cultivating gardens purely for pleasure as opposed to the production of food is known to have originated in the Fertile Crescent. A famous example for this was the Hanging Gardens of Babylon. The earliest forms of gardens emerged from the people's need to grow herbs and vegetables for consumption or medicinal use. And yet, many rich individuals in the past had gardens for only decorative purposes and leisure. Today, many countries, including England, the garden traditions of which go back to the landscape artists of the 18th and 19th centuries, admire gardening too, and the interest in English gardens crosses all age and social boundaries.</p>`,
+                    questions: [{
+                        id: 't5q16',
+                        text: 'It is stated in the passage that one of the purposes of the gardens was to',
+                        options: ['be a part of the ancient history',
+                            'be one of the wonders of the world',
+                            'show off',
+                            'grow food',
+                            'discover different kinds of fruit'
+                        ],
+                        answer: 3,
+                        highlight: 'Gardening for food extends far back into prehistory.'
+                    }, {
+                        id: 't5q17',
+                        text: 'We learn from the passage that rich people had gardens for',
+                        options: ['spending their free time and making their surroundings more attractive',
+                            'decorating their historical buildings',
+                            'continuing the traditions that came from their ancestors growing flowers',
+                            'helping poor people find food',
+                            'exhibiting the works of artists who painted those imaginary gardens long ago'
+                        ],
+                        answer: 0,
+                        highlight: 'many rich individuals in the past had gardens for only decorative purposes and leisure.'
+                    }, {
+                        id: 't5q18',
+                        text: 'The passage points out that today the people interested in English gardens',
+                        options: ['are the rich and the wealthy',
+                            'are the artists living in the countryside',
+                            'started gardening in the 18th and 19th centuries',
+                            'like decorative ornaments',
+                            'can be at any age or from all walks of life'
+                        ],
+                        answer: 4,
+                        highlight: 'the interest in English gardens crosses all age and social boundaries.'
+                    }]
+                }, {
+                    id: 't5p7',
+                    label: 'Bermuda Triangle',
+                    text: `<p>Bermuda Triangle is the section of the North Atlantic Ocean off North America in which more than 50 ships and 20 airplanes are said to have mysteriously disappeared. Reports of unexplained occurrences in the region date to the mid-19th century. Some ships were discovered completely abandoned for no apparent reason; others transmitted no distress signals and were never seen or heard from again. Aircraft have been reported and then vanished, and rescue missions are said to have vanished when flying in the area. However, wreckage has not been found, and some of the theories advanced to explain the repeated mysteries have been fanciful. Although theories of supernatural causes for these disappearances abound, geophysical and environmental factors are most likely responsible. One hypothesis is that the missing vessels were felled by so-called "rogue waves," which are massive waves that can reach heights of up to 30.5 metres and would theoretically be powerful enough to destroy all evidence of a ship or airplane.</p>`,
+                    questions: [{
+                        id: 't5q19',
+                        text: 'According to the passage, the Bermuda Triangle',
+                        options: ['no longer poses a challenge to experienced sailors',
+                            'has never been easy for sailors to locate',
+                            'is believed by some to have sunk many vessels mysteriously',
+                            'is known around the world for its calm waters',
+                            'derives its power from the magnetic field surrounding it'
+                        ],
+                        answer: 2,
+                        highlight: 'in which more than 50 ships and 20 airplanes are said to have mysteriously disappeared.'
+                    }, {
+                        id: 't5q20',
+                        text: 'The underlined word \'abound\' in the passage most nearly means',
+                        options: ['explain in a more detailed way',
+                            'state something indirectly',
+                            'have not enough of something',
+                            'move away from a place',
+                            'exist in great numbers'
+                        ],
+                        answer: 4,
+                        highlight: 'Although theories of supernatural causes for these disappearances abound'
+                    }, {
+                        id: 't5q21',
+                        text: 'The main purpose of the passage is to',
+                        options: ['provide a detailed account of the disappearance of a particular ship',
+                            'enlighten the reader on how to navigate the Bermuda Triangle',
+                            'disprove some theories regarding disappearances in the Bermuda Triangle',
+                            'scientifically explain the disappearances in the Bermuda Triangle',
+                            'discourage pilots and captains from approaching the Bermuda Triangle inexhaustively'
+                        ],
+                        answer: 3,
+                        highlight: 'geophysical and environmental factors are most likely responsible.'
+                    }]
+                }, {
+                    id: 't5p8',
+                    label: 'Maldives',
+                    text: `<p>The Maldives is a group of coral islands scattered across the equator in the middle of the Indian Ocean. The gemlike islands show the rare beauty of a tropical paradise. Marco Polo referred to the Maldives as the 'Flower of the Indies'. The Maldives, whose closest neighbours are India and Sri Lanka, measures 820 kilometres north to south and 120 kilometres east to west at its greatest width. There are 1190 coral islands grouped in a double chain of twenty-seven atolls and only 202 of them are inhabited. The islands are very small and with many being no more than two metres above sea level. In fact, the highest island is situated at three metres above sea level. Their common features are tall coconut palms and white sandy beaches. There are no hills, mountains or rivers in the Maldives. Although some larger atolls are approximately fifty kilometres long from north to south and thirty kilometres wide from east to west, no individual island is longer than eight kilometres.</p>`,
+                    questions: [{
+                        id: 't5q22',
+                        text: 'We can understand from the passage that the writer thinks',
+                        options: ['everyone should visit the Maldives',
+                            'the Maldives are home to many rare species',
+                            'the islands more than two metres above sea level have a greater view',
+                            'the Maldives has a unique beauty',
+                            'there should be more accommodation on the islands'
+                        ],
+                        answer: 3,
+                        highlight: 'The gemlike islands show the rare beauty of a tropical paradise.'
+                    }, {
+                        id: 't5q23',
+                        text: 'Which statement is true about the Maldives?',
+                        options: ['It is bordered by India and Sri Lanka.',
+                            'It is the birthplace of Marco Polo.',
+                            'It was discovered by the Indians.',
+                            'It has nearly 1,000 islands that no one lives on.',
+                            'It is the biggest island of the Indian Ocean.'
+                        ],
+                        answer: 3,
+                        highlight: 'There are 1190 coral islands ... and only 202 of them are inhabited.'
+                    }, {
+                        id: 't5q24',
+                        text: 'It is stated in the passage that one of the characteristics of the Maldives is that',
+                        options: ['it is the smallest country in land area',
+                            'it is a group of flat islands which are about two metres above sea level',
+                            'its economy depends on coconut production',
+                            'many explorers such as Marco Polo lived there',
+                            'it is the only island country of India'
+                        ],
+                        answer: 1,
+                        highlight: 'many being no more than two metres above sea level.'
+                    }]
+                }]
+            },
+
+            // ─── TEST 6 ─── (abbreviated for space – full tests exist in book)
+            test6: {
+                passages: [{
+                    id: 't6p1',
+                    label: 'Early flight',
+                    text: `<p>The origin of mankind's desire to fly is lost in the distant past. From the earliest legends there have been stories of men strapping birdlike wings, stiffened cloaks or other devices to themselves and attempting to fly, typically by jumping off a tower. The Greek legend of Daedalus and Icarus is one of the earliest known; others originated from India, China and the European Middle Age. During this early period, the issues of lift, stability and control were not understood, and most attempts ended in serious injury or death. In medieval Europe, the earliest recorded tower jump dates from 852 AD, when Armen Firman, also known as Abbas ibn Firnas, made a jump in Cordoba, Spain, reportedly covering his body with vulture feathers and attaching two wings to his arms. According to some resources, he flew a considerable distance and survived with minor injuries. Eilmer of Malmesbury soon followed. He is said to have attached wings to his hands and feet and managed to fly the length of two football fields. Many others have continued the attempts to fly over the centuries.</p>`,
+                    questions: [{
+                        id: 't6q1',
+                        text: 'It is stated in the passage that we cannot know for sure',
+                        options: ['when exactly mankind\'s desire to fly emerged',
+                            'how flight patterns differed across some countries',
+                            'why Armen Firman adopted a different name',
+                            'whether Eilmer of Malmesbury was inspired by those who flew before',
+                            'how Daedalus and Icarus managed to fly for the first time in history'
+                        ],
+                        answer: 0,
+                        highlight: 'The origin of mankind\'s desire to fly is lost in the distant past.'
+                    }, {
+                        id: 't6q2',
+                        text: 'According to the passage, the majority of the early attempts to fly',
+                        options: ['followed calculations regarding lift, stability and control',
+                            'involved separating facts from legends',
+                            'failed and led to casualties',
+                            'necessitated figuring out what gravity was',
+                            'were success stories'
+                        ],
+                        answer: 2,
+                        highlight: 'most attempts ended in serious injury or death.'
+                    }, {
+                        id: 't6q3',
+                        text: 'We can infer from the passage that, usually, men first tried to fly',
+                        options: ['by moving up vertically',
+                            'for military reasons',
+                            'even if they knew it meant instant death',
+                            'in order to impress some vultures',
+                            'by using wing-like attachments and jumping off towers'
+                        ],
+                        answer: 4,
+                        highlight: 'strapping birdlike wings, stiffened cloaks or other devices to themselves and attempting to fly, typically by jumping off a tower.'
+                    }]
+                }, {
+                    id: 't6p2',
+                    label: 'Need for achievement',
+                    text: `<p>Individuals with a high need for achievement function best in competitive situations and are fast learners. They are driven by the need to live up to a high self-imposed standard of performance rather than the desire for fame or fortune. They are usually self-confident, willing to take on individual responsibility and are relatively resistant to outside social pressures. They allow little to get in the way of accomplishing their goals. However, they are also likely to be tense and to suffer psychosomatic illnesses, which are bodily ailments caused by mental or emotional disturbance. Once we know that individuals are high in need for achievement, the question remains: How did they get to be that way? Children who are exposed to adult standards of excellence and whose success is reinforced by these standards will soon learn how to differentiate between good and poor performance. They will know that they will be praised for achievement or punished for lack of it. This will lead them to a desire to do things well.</p>`,
+                    questions: [{
+                        id: 't6q4',
+                        text: 'According to the passage, people who are high in need for achievement',
+                        options: ['do whatever they can to become renowned one day',
+                            'are so much affected by the society that they suffer from some psychological illnesses in the end',
+                            'show a tendency to succeed in competitive circumstances',
+                            'had too strict parents when they were children',
+                            'are such sensitive people that they get upset very easily'
+                        ],
+                        answer: 2,
+                        highlight: 'Individuals with a high need for achievement function best in competitive situations'
+                    }, {
+                        id: 't6q5',
+                        text: 'Which of the following is true according to the passage?',
+                        options: ['Individuals start developing this desire for accomplishment in childhood.',
+                            'The parents of people with a high need for achievement have had no influence on their children.',
+                            'People who desire to perform really well is said to have a difficult childhood.',
+                            'People with a high need for achievement can only succeed in competitive posts.',
+                            'The more some individuals succeed, the more their parents force them.'
+                        ],
+                        answer: 0,
+                        highlight: 'Children who are exposed to adult standards of excellence ... will lead them to a desire to do things well.'
+                    }, {
+                        id: 't6q6',
+                        text: 'The passage is mainly about',
+                        options: ['the hardships individuals with a high need for achievement may encounter in life',
+                            'how parents force their children to become individuals who always perform well',
+                            'the activities individuals with a high need for achievement are interested in',
+                            'the differences between an adult\'s need for achievement and that of a child',
+                            'the general traits of individuals with a high need for achievement'
+                        ],
+                        answer: 4,
+                        highlight: 'Individuals with a high need for achievement function best in competitive situations and are fast learners.'
+                    }]
+                }, {
+                    id: 't6p3',
+                    label: 'Amish',
+                    text: `<p>The Amish largely share a Swiss-German ancestry. Although more Amish immigrated to America in the 19th century than during the 18th century, most of today's Amish descend from the 18th century immigrants. The Amish are known for simple living, plain clothing and reluctance to adopt many conveniences of modern technology. However, no summary of Amish lifestyle and culture can be totally adequate because there are few generalities that are true for all the Amish. However, it is known that the Amish do not generally educate their children past the eighth grade, believing that the basic knowledge offered up to that point is sufficient to prepare one for the Amish lifestyle. Almost no Amish go to high school, much less to college. In many communities, the Amish operate their own schools, which are typically one-room schoolhouses with teachers from the Amish community.</p>`,
+                    questions: [{
+                        id: 't6q7',
+                        text: 'Which of the following can be understood from the passage?',
+                        options: ['More Amish people used to live in America in the 19th century than now.',
+                            'The Amish most probably first came to live in America in the 18th century.',
+                            'It took the Amish a long time to get used to the modern way of life.',
+                            'Although there are many Amish groups, all of them share the same traditions and customs.',
+                            'The great grandparents of the Amish were all Swiss-Germans.'
+                        ],
+                        answer: 1,
+                        highlight: 'most of today\'s Amish descend from the 18th century immigrants.'
+                    }, {
+                        id: 't6q8',
+                        text: 'The underlined word \'adequate\' in the passage is closest in meaning to',
+                        options: ['enough',
+                            'correct',
+                            'regular',
+                            'common',
+                            'polit'
+                        ],
+                        answer: 0,
+                        highlight: 'no summary of Amish lifestyle and culture can be totally adequate'
+                    }, {
+                        id: 't6q9',
+                        text: 'According to the passage,',
+                        options: ['almost no Amish children attend college or university',
+                            'the Amish believe that education at school after grade eight is insufficient, so they don\'t send their children to school',
+                            'the lifestyle of the Amish has always attracted the attention of Americans',
+                            'since Amish traditions aren\'t based on too strict rules, we can notice some different practices in different Amish groups',
+                            'most Amish people detest having to follow the traditions dating back to the 18th century'
+                        ],
+                        answer: 0,
+                        highlight: 'Almost no Amish go to high school, much less to college.'
+                    }]
+                }, {
+                    id: 't6p4',
+                    label: 'Earth sheltering',
+                    text: `<p>Earth sheltering is the architectural practice of using earth against building walls for external thermal mass, to reduce heat loss and to easily maintain a steady indoor air temperature. It is popular in modern times among advocates of passive solar and sustainable architecture. Earth-sheltered homes are typically made of concrete. Construction costs can run 10% higher than that of a conventional house. However, enthusiasts say that the lower maintenance and energy costs make earth-sheltered homes a good buy. Another advantage of the earth-sheltered house is protection from tornado and storm damage. In addition, these homes are much quieter than their above-ground counterparts. Even when cold winter winds blow, the earth-sheltered house is quiet and comfortable inside. Except for cutting the lawn on the roof, these houses need little exterior maintenance.</p>`,
+                    questions: [{
+                        id: 't6q10',
+                        text: 'It is understood from the passage that earth-sheltered homes',
+                        options: ['have got only one disadvantage: The lawn is on the roof, which results in much
